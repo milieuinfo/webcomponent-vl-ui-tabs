@@ -19,6 +19,11 @@ import '/lib/tabs.js';
  *
  */
 export class VlTabs extends vlElement(HTMLElement) {
+
+  static get is() {
+    return 'vl-tabs';
+  }
+
   constructor() {
     super(`
     <style>
@@ -54,8 +59,7 @@ export class VlTabs extends vlElement(HTMLElement) {
           <a class="vl-tab__link" 
             href="#${id}" 
             id="${id}" 
-            data-vl-tab role="tab" 
-            aria-controls="vl-tab-nummer-3-pane">${title}</a>
+            data-vl-tab role="tab" >${title}</a>
         </li>
       `));
     })
@@ -81,7 +85,6 @@ export class VlTabs extends vlElement(HTMLElement) {
     return this.shadowRoot.getElementById('tabList');
   }
 
-
   get __tabs() {
     return this.shadowRoot.getElementById('tabs');
   }
@@ -103,6 +106,6 @@ export class VlTabPane extends vlElement(HTMLElement) {
 }
 
 awaitUntil(() => window.vl && window.vl.tabs).then(() => {
-  define('vl-tabs', VlTabs);
+  define(VlTabs.is, VlTabs);
   define(VlTabPane.is, VlTabPane)
 })

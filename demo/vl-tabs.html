@@ -1,20 +1,46 @@
 <!DOCTYPE html>
 <html>
-	<head>
-        <title>vl-tabs voorbeeld</title>
-        <script type="module" src="/node_modules/vl-ui-demo/dist/vl-demo-all.js"></script>
-        <script type="module" src="/node_modules/vl-ui-body/dist/vl-body.js"></script>
+<head>
+  <title>vl-tabs voorbeeld</title>
+  <script type="module" src="/node_modules/vl-ui-demo/dist/vl-demo-all.js"></script>
+  <script type="module" src="/node_modules/vl-ui-body/dist/vl-body.js"></script>
 
-        <script type="module" src="/src/vl-tabs.js"></script>
+  <script type="module" src="/src/vl-tabs.js"></script>
 
-        <link rel="stylesheet" type="text/css" href="/src/style.css">
-        <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-body/dist/style.css">
-        <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-demo/dist/style.css">
-    </head>
+  <link rel="stylesheet" type="text/css" href="/src/style.css">
+  <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-body/dist/style.css">
+  <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-demo/dist/style.css">
 
-	<body is="vl-body">
-        <vl-demo-page data-vl-webcomponent="vl-tabs" data-vl-link="https://overheid.vlaanderen.be/webuniversum/v3/documentation/atoms/vl-ui-tabs">
-            <vl-demo data-vl-title="Tabs"></vl-demo>
-        </vl-demo-page>
-    </body>
+  <link rel="stylesheet" type="text/css" href="../src/style.css">
+</head>
+
+<body is="vl-body">
+<vl-demo-page data-vl-webcomponent="vl-tabs"
+              data-vl-link="https://overheid.vlaanderen.be/webuniversum/v3/documentation/atoms/vl-ui-tabs">
+  <vl-demo data-vl-title="Tabs">
+    <div class="vl-region vl-region--no-space-top vl-u-no-overflow">
+      <vl-tabs>
+        <vl-tabs-pane
+            data-vl-id="fiets"
+            data-vl-title="Fiets">
+          Fiets
+          Donec sed odio dui.
+        </vl-tabs-pane>
+        <vl-tabs-pane
+            data-vl-id="metro-tram-bus"
+            data-vl-title="Metro, tram en bus">
+          Metro, tram en bus
+          Tellus Ligula Mollis
+        </vl-tabs-pane>
+        <vl-tabs-pane
+            data-vl-id="trein"
+            data-vl-title="Trein">
+          Trein
+          Nullam Sollicitudin Justo
+        </vl-tabs-pane>
+      </vl-tabs>
+    </div>
+  </vl-demo>
+</vl-demo-page>
+</body>
 </html>

@@ -54,10 +54,11 @@ export class VlTabs extends vlElement(HTMLElement) {
     [...this.__tabPanes].forEach((tp) => {
       const title = tp.getAttribute('data-vl-title');
       const id = tp.getAttribute('data-vl-id');
+      const currentLocation = window.location.href;
       this.__tabList.appendChild(this._template(`
         <li class="vl-tab">
           <a class="vl-tab__link" 
-            href="#${id}" 
+            href="${currentLocation}#${id}" 
             id="${id}" 
             data-vl-tab role="tab" >${title}</a>
         </li>

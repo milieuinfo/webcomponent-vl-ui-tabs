@@ -1,7 +1,7 @@
 import {
   awaitUntil,
   define,
-  vlElement
+  vlElement,
 } from '/node_modules/vl-ui-core/dist/vl-core.js';
 import '/lib/tabs.js';
 
@@ -19,7 +19,6 @@ import '/lib/tabs.js';
  *
  */
 export class VlTabs extends vlElement(HTMLElement) {
-
   static get is() {
     return 'vl-tabs';
   }
@@ -51,7 +50,7 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _renderTabs() {
     this.__tabList.innerHTML = '';
-    [...this.__tabPanes].forEach(tp => {
+    [...this.__tabPanes].forEach((tp) => {
       const title = tp.getAttribute('data-vl-title');
       const id = tp.getAttribute('data-vl-id');
       this.__tabList.appendChild(this._template(`
@@ -62,11 +61,11 @@ export class VlTabs extends vlElement(HTMLElement) {
             data-vl-tab role="tab" >${title}</a>
         </li>
       `));
-    })
+    });
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach(tp => {
+    [...this.__tabPanes].forEach((tp) => {
       const id = tp.getAttribute('data-vl-id');
       const content = tp.innerHTML;
       this.__tabs.appendChild(this._template(`
@@ -78,7 +77,7 @@ export class VlTabs extends vlElement(HTMLElement) {
           ${content}
         </section>
       `));
-    })
+    });
   }
 
   get __tabList() {
@@ -95,7 +94,6 @@ export class VlTabs extends vlElement(HTMLElement) {
 }
 
 export class VlTabPane extends vlElement(HTMLElement) {
-
   static get is() {
     return 'vl-tabs-pane';
   }
@@ -107,5 +105,5 @@ export class VlTabPane extends vlElement(HTMLElement) {
 
 awaitUntil(() => window.vl && window.vl.tabs).then(() => {
   define(VlTabs.is, VlTabs);
-  define(VlTabPane.is, VlTabPane)
-})
+  define(VlTabPane.is, VlTabPane);
+});

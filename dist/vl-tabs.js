@@ -3,7 +3,7 @@ import {
   define,
   vlElement,
 } from '/node_modules/vl-ui-core/dist/vl-core.js';
-import '/lib/tabs.js';
+import '/node_modules/vl-ui-tabs/lib/tabs.js';
 
 /**
  * VlTabs
@@ -26,7 +26,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   constructor() {
     super(`
     <style>
-      @import '/src/style.css';
+      @import '/node_modules/vl-ui-tabs/dist/style.css';
     </style>
     <div id="tabs" data-vl-tabs data-vl-tabs-responsive-label="Navigatie">
       <div id="tabsWrapper" class="vl-tabs__wrapper">

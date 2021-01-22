@@ -27,6 +27,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     super(`
     <style>
       @import '/src/style.css';
+      
+      .vl-tabs--alt::before {
+        width: auto;
+      }
     </style>
     <div id="tabs" data-vl-tabs data-vl-tabs-responsive-label="Navigatie">
       <div id="tabsWrapper" class="vl-tabs__wrapper">

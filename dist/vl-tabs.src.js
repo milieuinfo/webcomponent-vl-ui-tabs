@@ -71,16 +71,17 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach((tp) => {
+    [...this.__tabPanes].forEach((tp, index) => {
       const id = tp.getAttribute('data-vl-id');
-      const content = tp.innerHTML;
+      tp.setAttribute('slot', id + '-' + index);
+
       this.__tabs.appendChild(this._template(`
         <section class="vl-col--1-1 vl-tab__pane" 
           data-vl-tab-pane tabindex="0" 
           role="tabpanel" 
           id="${id}-pane" 
           hidden="hidden">
-          ${content}
+          <slot name="${id}-${index}"></slot>
         </section>
       `));
     });

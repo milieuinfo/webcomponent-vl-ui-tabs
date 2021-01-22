@@ -23,6 +23,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'vl-tabs';
   }
 
+  static get _observedAttributes() {
+    return ['active-tab'];
+  }
+
   constructor() {
     super(`
     <style>
@@ -50,6 +54,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   connectedCallback() {
     this._renderTabs();
     this._renderSections();
+    this.__updateActiveTab(this.getAttribute('data-vl-active-tab'));
     vl.tabs.dress(this.shadowRoot);
   }
 
@@ -87,6 +92,31 @@ export class VlTabs extends vlElement(HTMLElement) {
     });
   }
 
+  __updateActiveTab(activeTab) {
+    Array.from(this.__tabs.getElementsByClassName('vl-tab__pane')).forEach(
+        (tp) => {
+          if (tp.getAttribute('id') === activeTab + '-pane') {
+            tp.setAttribute('data-vl-show', true)
+          } else {
+            tp.setAttribute('data-vl-show', false)
+          }
+        });
+    Array.from(this.__tabList.getElementsByClassName('vl-tab__link')).forEach(
+        (tp) => {
+          if (tp.getAttribute('id') === activeTab) {
+            if (this.__hasActiveTabClass(tp.parentNode)) {
+              tp.parentNode.classList.add('vl-tab--active');
+            }
+          } else {
+            tp.parentNode.classList.remove('vl-tab--active');
+          }
+        });
+  }
+
+  __hasActiveTabClass(element) {
+    return element.getAttribute('class').indexOf('vl-tab--active') < 0;
+  }
+
   get __tabList() {
     return this.shadowRoot.getElementById('tabList');
   }
@@ -97,6 +127,10 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   get __tabPanes() {
     return this.querySelectorAll(VlTabPane.is);
+  }
+
+  _activeTabChangedCallback(oldValue, newValue) {
+    this.__updateActiveTab(newValue);
   }
 }
 

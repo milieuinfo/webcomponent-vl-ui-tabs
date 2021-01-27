@@ -93,21 +93,21 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   __updateActiveTab(activeTab) {
-    this.shadowRoot.querySelectorAll("[data-vl-tab]").forEach(tb => {
-      if(tb.id === activeTab) {
+    this.shadowRoot.querySelectorAll('[data-vl-tab]').forEach((tb) => {
+      if (tb.id === activeTab) {
         tb.click();
       }
     });
   }
 
   __registerActiveTabListeners() {
-    this.shadowRoot.querySelectorAll("[data-vl-tab]").forEach(tb => {
+    this.shadowRoot.querySelectorAll('[data-vl-tab]').forEach((tb) => {
       tb.addEventListener('click', () => {
-        if(this.getAttribute('data-vl-active-tab') !== tb.id) {
+        if (this.getAttribute('data-vl-active-tab') !== tb.id) {
           this.setAttribute('data-vl-active-tab', tb.id);
         }
-      })
-    })
+      });
+    });
   }
 
   __hasActiveTabClass(element) {

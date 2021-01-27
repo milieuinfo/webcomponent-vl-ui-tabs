@@ -95,7 +95,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   __updateActiveTab(activeTab) {
     this.shadowRoot.querySelectorAll('[data-vl-tab]').forEach((tb) => {
       if (tb.id === activeTab) {
-        tb.click();
+        setTimeout(() => tb.click());
       }
     });
   }
@@ -104,7 +104,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     this.shadowRoot.querySelectorAll('[data-vl-tab]').forEach((tb) => {
       tb.addEventListener('click', () => {
         if (this.getAttribute('data-vl-active-tab') !== tb.id) {
-          this.setAttribute('data-vl-active-tab', tb.id);
+          this.dispatchEvent(new CustomEvent('change', {detail: tb.id, bubbles: true, composed: true}));
         }
       });
     });

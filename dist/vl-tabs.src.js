@@ -96,9 +96,9 @@ export class VlTabs extends vlElement(HTMLElement) {
     Array.from(this.__tabs.getElementsByClassName('vl-tab__pane')).forEach(
         (tp) => {
           if (tp.getAttribute('id') === activeTab + '-pane') {
-            tp.setAttribute('data-vl-show', true)
+            tp.setAttribute('data-vl-show', 'true');
           } else {
-            tp.setAttribute('data-vl-show', false)
+            tp.setAttribute('data-vl-show', 'false');
           }
         });
     Array.from(this.__tabList.getElementsByClassName('vl-tab__link')).forEach(

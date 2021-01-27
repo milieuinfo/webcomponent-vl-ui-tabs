@@ -53,9 +53,9 @@ export class VlTabs extends vlElement(HTMLElement) {
   connectedCallback() {
     this._renderTabs();
     this._renderSections();
-    this.__updateActiveTab(this.getAttribute('data-vl-active-tab'));
     this.__registerActiveTabListeners();
     vl.tabs.dress(this.shadowRoot);
+    this.__updateActiveTab(this.getAttribute('data-vl-active-tab'));
   }
 
   _renderTabs() {

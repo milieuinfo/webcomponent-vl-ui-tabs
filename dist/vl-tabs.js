@@ -104,7 +104,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     this.shadowRoot.querySelectorAll('[data-vl-tab]').forEach((tb) => {
       tb.addEventListener('click', () => {
         if (this.getAttribute('data-vl-active-tab') !== tb.id) {
-          this.dispatchEvent(new CustomEvent('change', {detail: tb.id, bubbles: true, composed: true}));
+          this.dispatchEvent(new CustomEvent('change',
+              {detail: {activeTab: tb.id}, bubbles: true, composed: true}));
         }
       });
     });

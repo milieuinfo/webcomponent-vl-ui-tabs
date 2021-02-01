@@ -58,7 +58,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     this.__updateActiveTab(this.getAttribute('data-vl-active-tab'));
     this._observer = this.__observeChildElements((mutation) => {
       mutation.forEach((m) => {
-        m.addedNodes.filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
+        [...m.addedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
           this.__updateObservedTabs(node);
         });
       });

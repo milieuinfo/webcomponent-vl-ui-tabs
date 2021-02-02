@@ -67,7 +67,7 @@ export class VlTabs extends vlElement(HTMLElement) {
         <li is="vl-tab"
           data-vl-href="${pathname}#${(tp.id)}" 
           data-vl-id="${(tp.id)}">
-            ${(tp.title)}
+            ${(tp.dataset.vlTitle)}
         </li>
       `));
     });

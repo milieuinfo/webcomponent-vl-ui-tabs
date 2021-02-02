@@ -15,11 +15,17 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
 
   connectedCallback() {
     this.classList.add('data-vl-tab');
-    this.appendChild(this._template(`<a id="tabLink" class="vl-tab__link" data-vl-tab role="tab">${this.childNodes[0]}</a>`));
+    const a = this.__LinkElementTemplate.firstElementChild;
+    a.appendChild(this.childNodes[0]);
+    this.appendChild(a);
   }
 
   get __tabLink() {
     return this.getElementById('tabLink');
+  }
+
+  get __LinkElementTemplate() {
+    return this._template(`<a id="tabLink" class="vl-tab__link" data-vl-tab role="tab"></a>`);
   }
 
   set href(link) {
@@ -42,5 +48,5 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
 }
 
 awaitUntil(() => window.vl && window.vl.tabs).then(() => {
-  define(VlTab.is, VlTab, {extends: 'li' });
+  define(VlTab.is, VlTab, {extends: 'li'});
 });

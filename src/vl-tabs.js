@@ -1,11 +1,6 @@
-import {
-  awaitUntil,
-  define,
-  vlElement,
-} from '/node_modules/vl-ui-core/dist/vl-core.js';
-import {VlTabPane} from './vl-tab-pane.js';
-import './vl-tab.js';
-
+import {awaitUntil, define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {VlTabPane} from '/src/vl-tab-pane.js';
+import '/src/vl-tab.js';
 import '/lib/tabs.js';
 
 /**
@@ -39,7 +34,7 @@ export class VlTabs extends vlElement(HTMLElement) {
       <div id="tabsWrapper" class="vl-tabs__wrapper">
         <ul id="tabList" class="vl-tabs" data-vl-tabs-list role="tablist"></ul>  
         <button type="button" data-vl-tabs-toggle aria-expanded="false" class="vl-tabs__toggle" data-vl-close="false">
-            <span id="data-vl-tabs-responsive-label">Navigatie</span>  
+          <span id="data-vl-tabs-responsive-label">Navigatie</span>  
         </button>
       </div>
     </div>`);
@@ -69,36 +64,30 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _renderTabs() {
     this.__tabList.innerHTML = '';
-    [...this.__tabPanes].forEach((tp) => {
+    [...this.__tabPanes].forEach((tabPane) => {
       const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
-        <li is="vl-tab"
-          data-vl-href="${pathname}#${(tp.id)}" 
-          data-vl-id="${(tp.id)}">
-            ${(tp.title)}
+        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
+          ${(tabPane.title)}
         </li>
       `));
     });
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach((tp) => {
-      tp.setAttribute('slot', tp.id + '-slot');
+    [...this.__tabPanes].forEach((tabPane) => {
+      tabPane.setAttribute('slot', tabPane.id + '-slot');
 
       this.__tabs.appendChild(this._template(`
-        <section class="vl-col--1-1 vl-tab__pane" 
-          data-vl-tab-pane tabindex="0" 
-          role="tabpanel" 
-          id="${(tp.id)}-pane" 
-          hidden="hidden">
-          <slot name="${(tp.id)}-slot"></slot>
+        <section id="${(tabPane.id)}-pane" is="vl-tab-section">
+          <slot name="${(tabPane.id)}-slot"></slot>
         </section>
       `));
     });
   }
 
   _altChangedCallback(oldValue, newValue) {
-    if (this.hasAttribute('data-vl-alt')) {
+    if (newValue != undefined) {
       this.__tabList.classList.add('vl-tabs--alt');
     } else {
       this.__tabList.classList.remove('vl-tabs--alt');

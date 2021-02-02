@@ -27,4 +27,12 @@ describe('vl-tabs', async () => {
     tabs = await vlTabsPage.getTabs();
     await assert.eventually.isTrue(tabs.hasContent());
   });
+
+  it('als gebruiker zie ik het verschil tussen een alt tabs en een gewone tabs', async () => {
+    const tabs = await vlTabsPage.getTabs();
+    const altTabs = await vlTabsPage.getAltTabs();
+
+    await assert.eventually.isFalse(tabs.isAlt());
+    await assert.eventually.isTrue(altTabs.isAlt());
+  });
 });

@@ -21,6 +21,10 @@ class VlTabs extends VlElement {
     }
   }
 
+  async isAlt() {
+    return this.hasAttribute('alt');
+  }
+
   async _getTabListElement() {
     return this.shadowRoot.findElement(By.css('#tabList'));
   }

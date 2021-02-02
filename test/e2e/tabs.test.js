@@ -3,8 +3,11 @@ const VlTabsPage = require('./pages/vl-tabs.page');
 
 describe('vl-tabs', async () => {
   let vlTabsPage;
+  const content1 = 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.';
+  const content2 = 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+  const content3 = 'Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.';
 
-  before(() => {
+  beforeEach(() => {
     vlTabsPage = new VlTabsPage(getDriver());
     return vlTabsPage.load();
   });
@@ -27,19 +30,29 @@ describe('vl-tabs', async () => {
     tabs = await vlTabsPage.getTabs();
     await assert.eventually.isTrue(tabs.hasContent());
     let tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.');
+    await assert.eventually.equal(tabContent.getText(), content1);
 
     tabElements = await tabs.getTabs();
     await tabElements[1].click();
     tabs = await vlTabsPage.getTabs();
     tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+    await assert.eventually.equal(tabContent.getText(), content2);
 
     tabElements = await tabs.getTabs();
     await tabElements[2].click();
     tabs = await vlTabsPage.getTabs();
     tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), 'Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.');
+    await assert.eventually.equal(tabContent.getText(), content3);
+  });
+
+  it('als gebruiker kan ik rechtstreeks naar een URL surfen van een tab en zal deze geactiveerd worden', async () => {
+    let tabs = await vlTabsPage.getTabs();
+    await assert.eventually.isFalse(tabs.hasContent());
+
+    await vlTabsPage.loadHash('#trein');
+    tabs = await vlTabsPage.getTabs();
+    await assert.eventually.isTrue(tabs.hasContent()); const tabContent = await tabs.getContentSlotElement();
+    await assert.eventually.equal(tabContent.getText(), content1);
   });
 
   it('als gebruiker zie ik het verschil tussen een alt tabs en een gewone tabs', async () => {

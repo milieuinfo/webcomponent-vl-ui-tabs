@@ -14,7 +14,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   connectedCallback() {
-    this.classList.add('data-vl-tab');
+    this.classList.add('vl-tab');
     const a = this.__LinkElementTemplate.firstElementChild;
     a.appendChild(this.childNodes[0]);
     this.appendChild(a);

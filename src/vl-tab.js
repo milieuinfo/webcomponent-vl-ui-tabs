@@ -1,4 +1,4 @@
-import {nativeVlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {nativeVlElement, define} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
 export class VlTab extends nativeVlElement(HTMLLIElement) {
   static get is() {

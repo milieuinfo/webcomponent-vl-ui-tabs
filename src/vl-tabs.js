@@ -114,13 +114,9 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   _responsiveLabelChangedCallback(oldValue, newValue) {
-    if (newValue) {
-      this.__tabs.setAttribute('data-vl-tabs-toggle', newValue);
-      this.__responsiveLabel.innerHTML = newValue;
-    } else {
-      this.__tabs.setAttribute('data-vl-tabs-toggle', 'Navigatie');
-      this.__responsiveLabel.innerHTML = 'Navigatie';
-    }
+    const value = newValue || 'Navigatie';
+    this.__tabs.setAttribute('data-vl-tabs-responsive-label', value);
+    this.__responsiveLabel.innerHTML = value;
   }
 }
 

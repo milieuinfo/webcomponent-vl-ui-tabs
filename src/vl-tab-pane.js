@@ -1,7 +1,4 @@
-import {
-  define,
-  vlElement,
-} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
 export class VlTabPane extends vlElement(HTMLElement) {
   static get is() {

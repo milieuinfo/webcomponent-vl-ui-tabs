@@ -51,6 +51,22 @@ export class VlTabs extends vlElement(HTMLElement) {
     vl.tabs.dress(this.shadowRoot);
   }
 
+  get __tabList() {
+    return this.shadowRoot.getElementById('tabList');
+  }
+
+  get __tabs() {
+    return this.shadowRoot.getElementById('tabs');
+  }
+
+  get __responsiveLabel() {
+    return this.shadowRoot.getElementById('data-vl-tabs-responsive-label');
+  }
+
+  get __tabPanes() {
+    return this.querySelectorAll(VlTabPane.is);
+  }
+
   _renderTabs() {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tp) => {
@@ -79,22 +95,6 @@ export class VlTabs extends vlElement(HTMLElement) {
         </section>
       `));
     });
-  }
-
-  get __tabList() {
-    return this.shadowRoot.getElementById('tabList');
-  }
-
-  get __tabs() {
-    return this.shadowRoot.getElementById('tabs');
-  }
-
-  get __responsiveLabel() {
-    return this.shadowRoot.getElementById('data-vl-tabs-responsive-label');
-  }
-
-  get __tabPanes() {
-    return this.querySelectorAll(VlTabPane.is);
   }
 
   _altChangedCallback(oldValue, newValue) {

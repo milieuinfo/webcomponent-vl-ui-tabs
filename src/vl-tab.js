@@ -1,7 +1,4 @@
-import {
-  define,
-  nativeVlElement,
-} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {nativeVlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
 export class VlTab extends nativeVlElement(HTMLLIElement) {
   static get is() {
@@ -37,12 +34,10 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   _hrefChangedCallback(oldValue, newValue) {
-    // this.__href = newValue;
     this.__tabLink.setAttribute('href', newValue);
   }
 
   _idChangedCallback(oldValue, newValue) {
-    // this.__id = newValue;
     this.__tabLink.setAttribute('id', newValue);
   }
 }

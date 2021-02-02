@@ -8,6 +8,19 @@ class VlTabs extends VlElement {
     return Promise.all(elements.map((element) => new VlTab(this.driver, element)));
   }
 
+  async getContent() {
+    return this.shadowRoot.findElement(By.css('[data-vl-tab-pane][data-vl-show="true"]'));
+  }
+
+  async hasContent() {
+    try {
+      await this.driver.wait(async () => this.getContent(), 1000);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async _getTabListElement() {
     return this.shadowRoot.findElement(By.css('#tabList'));
   }

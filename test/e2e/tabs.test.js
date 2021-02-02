@@ -17,4 +17,14 @@ describe('vl-tabs', async () => {
     await assert.eventually.equal(tabElements[1].getText(), 'Metro, tram en bus');
     await assert.eventually.equal(tabElements[2].getText(), 'Fiets');
   });
+
+  it('als gebruiker kan ik na het selecteren van een tab de tab specifieke content zien', async () => {
+    let tabs = await vlTabsPage.getTabs();
+    await assert.eventually.isFalse(tabs.hasContent());
+
+    const tabElements = await tabs.getTabs();
+    await tabElements[0].click();
+    tabs = await vlTabsPage.getTabs();
+    await assert.eventually.isTrue(tabs.hasContent());
+  });
 });

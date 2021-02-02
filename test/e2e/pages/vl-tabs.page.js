@@ -14,6 +14,12 @@ class VlTabsPage extends Page {
     await super.load(Config.baseUrl + '/demo/vl-tabs.html');
   }
 
+  async loadHash(hash) {
+    const url = await this.driver.getCurrentUrl();
+    await this.driver.get(`${url}${hash}`);
+    await this.driver.navigate().refresh();
+  }
+
   async _getTabs(selector) {
     return new VlTabs(this.driver, selector);
   }

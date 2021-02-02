@@ -3,6 +3,8 @@ import {
   define,
   vlElement,
 } from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {VlTabPane} from "./vl-tab-pane.js";
+
 import '/lib/tabs.js';
 
 /**
@@ -24,7 +26,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt'];
+    return ['alt', 'responsive-label'];
   }
 
   constructor() {
@@ -44,7 +46,7 @@ export class VlTabs extends vlElement(HTMLElement) {
           data-vl-tabs-toggle aria-expanded="false" 
           class="vl-tabs__toggle" 
           data-vl-close="false">
-          <span>Navigatie</span>  
+          <span id="data-vl-tabs-responsive-label">Navigatie</span>  
         </button>
       </div>
     </div>`);
@@ -59,32 +61,29 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderTabs() {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tp) => {
-      const title = tp.getAttribute('data-vl-title');
-      const id = tp.getAttribute('data-vl-id');
       const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
         <li class="vl-tab">
           <a class="vl-tab__link" 
-            href="${pathname}#${id}" 
-            id="${id}" 
-            data-vl-tab role="tab" >${title}</a>
+            href="${pathname}#${(tp.id)}" 
+            id="${(tp.id)}" 
+            data-vl-tab role="tab" >${(tp.title)}</a>
         </li>
       `));
     });
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach((tp, index) => {
-      const id = tp.getAttribute('data-vl-id');
-      tp.setAttribute('slot', id + '-' + index);
+    [...this.__tabPanes].forEach((tp) => {
+      tp.setAttribute('slot', tp.id + '-slot');
 
       this.__tabs.appendChild(this._template(`
         <section class="vl-col--1-1 vl-tab__pane" 
           data-vl-tab-pane tabindex="0" 
           role="tabpanel" 
-          id="${id}-pane" 
+          id="${(tp.id)}-pane" 
           hidden="hidden">
-          <slot name="${id}-${index}"></slot>
+          <slot name="${(tp.id)}-slot"></slot>
         </section>
       `));
     });
@@ -98,6 +97,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return this.shadowRoot.getElementById('tabs');
   }
 
+  get __responsiveLabel() {
+    return this.shadowRoot.getElementById('data-vl-tabs-responsive-label');
+  }
+
   get __tabPanes() {
     return this.querySelectorAll(VlTabPane.is);
   }
@@ -109,19 +112,18 @@ export class VlTabs extends vlElement(HTMLElement) {
       this.__tabList.classList.remove('vl-tabs--alt');
     }
   }
-}
 
-export class VlTabPane extends vlElement(HTMLElement) {
-  static get is() {
-    return 'vl-tabs-pane';
-  }
-
-  constructor() {
-    super(`<slot></slot>`);
+  _responsiveLabelChangedCallback(oldValue, newValue) {
+    if (newValue) {
+      this.__tabs.setAttribute('data-vl-tabs-toggle', newValue);
+      this.__responsiveLabel.innerHTML = newValue;
+    } else {
+      this.__tabs.setAttribute('data-vl-tabs-toggle', 'Navigatie');
+      this.__responsiveLabel.innerHTML = 'Navigatie';
+    }
   }
 }
 
 awaitUntil(() => window.vl && window.vl.tabs).then(() => {
   define(VlTabs.is, VlTabs);
-  define(VlTabPane.is, VlTabPane);
 });

@@ -3,5 +3,5 @@ import {VlTabPane} from '/src/vl-tab-pane.js';
 
 export {
   VlTabs,
-  VlTabPane
+  VlTabPane,
 };

@@ -51,12 +51,12 @@ export class VlTabs extends vlElement(HTMLElement) {
     vl.tabs.dress(this.shadowRoot);
   }
 
-  get __tabList() {
-    return this.shadowRoot.getElementById('tabList');
-  }
-
   get __tabs() {
     return this.shadowRoot.getElementById('tabs');
+  }
+
+  get __tabList() {
+    return this.shadowRoot.getElementById('tabList');
   }
 
   get __responsiveLabel() {

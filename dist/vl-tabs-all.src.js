@@ -3,6 +3,6 @@ import {VlTabPane} from '../dist/vl-tab-pane.src.js';
 
 export {
   VlTabs,
-  VlTabPane
+  VlTabPane,
 };
 

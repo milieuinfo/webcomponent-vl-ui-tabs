@@ -13,7 +13,8 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
     return ['href', 'id'];
   }
 
-  connectedCallback() {
+  constructor() {
+    super();
     this.classList.add('vl-tab');
     const a = this.__LinkElementTemplate.firstElementChild;
     a.appendChild(this.childNodes[0]);
@@ -21,7 +22,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   get __tabLink() {
-    return this.getElementById('tabLink');
+    return this.querySelector('#tabLink');
   }
 
   get __LinkElementTemplate() {
@@ -37,16 +38,14 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   _hrefChangedCallback(oldValue, newValue) {
-    this.href = newValue;
+    // this.__href = newValue;
     this.__tabLink.setAttribute('href', newValue);
   }
 
   _idChangedCallback(oldValue, newValue) {
-    this.id = newValue;
+    // this.__id = newValue;
     this.__tabLink.setAttribute('id', newValue);
   }
 }
 
-awaitUntil(() => window.vl && window.vl.tabs).then(() => {
-  define(VlTab.is, VlTab, {extends: 'li'});
-});
+define(VlTab.is, VlTab, {extends: 'li'});

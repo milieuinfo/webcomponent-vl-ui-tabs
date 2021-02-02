@@ -17,14 +17,6 @@ export class VlTabPane extends vlElement(HTMLElement) {
     super(`<slot></slot>`);
   }
 
-  set id(id) {
-    this.setAttribute('data-vl-id', id);
-  }
-
-  set title(title) {
-    this.setAttribute('data-vl-title', title);
-  }
-
   get id() {
     return this.getAttribute('data-vl-id');
   }
@@ -32,16 +24,6 @@ export class VlTabPane extends vlElement(HTMLElement) {
   get title() {
     return this.getAttribute('data-vl-title');
   }
-
-  _idChangedCallback(oldValue, newValue) {
-    this.id = newValue;
-  }
-
-  _titleChangedCallback(oldValue, newValue) {
-    this.title = newValue;
-  }
 }
 
-awaitUntil(() => window.vl && window.vl.tabs).then(() => {
-  define(VlTabPane.is, VlTabPane);
-});
+define(VlTabPane.is, VlTabPane);

@@ -3,7 +3,8 @@ import {
   define,
   vlElement,
 } from '/node_modules/vl-ui-core/dist/vl-core.js';
-import {VlTabPane} from "./vl-tab-pane.js";
+import {VlTabPane} from './vl-tab-pane.js';
+import './vl-tab.js';
 
 import '/node_modules/vl-ui-tabs/lib/tabs.js';
 
@@ -63,11 +64,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     [...this.__tabPanes].forEach((tp) => {
       const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
-        <li class="vl-tab">
-          <a class="vl-tab__link" 
-            href="${pathname}#${(tp.id)}" 
-            id="${(tp.id)}" 
-            data-vl-tab role="tab" >${(tp.title)}</a>
+        <li is="vl-tab"
+          data-vl-href="${pathname}#${(tp.id)}" 
+          data-vl-id="${(tp.id)}">
+            ${(tp.title)}
         </li>
       `));
     });

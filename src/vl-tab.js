@@ -1,5 +1,4 @@
 import {
-  awaitUntil,
   define,
   nativeVlElement,
 } from '/node_modules/vl-ui-core/dist/vl-core.js';

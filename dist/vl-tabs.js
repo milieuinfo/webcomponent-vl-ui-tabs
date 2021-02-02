@@ -3,6 +3,8 @@ import {
   define,
   vlElement,
 } from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {VlTabPane} from "./vl-tab-pane.js";
+
 import '/node_modules/vl-ui-tabs/lib/tabs.js';
 
 /**
@@ -59,32 +61,29 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderTabs() {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tp) => {
-      const title = tp.getAttribute('data-vl-title');
-      const id = tp.getAttribute('data-vl-id');
       const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
         <li class="vl-tab">
           <a class="vl-tab__link" 
-            href="${pathname}#${id}" 
-            id="${id}" 
-            data-vl-tab role="tab" >${title}</a>
+            href="${pathname}#${(tp.id)}" 
+            id="${(tp.id)}" 
+            data-vl-tab role="tab" >${(tp.title)}</a>
         </li>
       `));
     });
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach((tp, index) => {
-      const id = tp.getAttribute('data-vl-id');
-      tp.setAttribute('slot', id + '-' + index);
+    [...this.__tabPanes].forEach((tp) => {
+      tp.setAttribute('slot', tp.id + '-slot');
 
       this.__tabs.appendChild(this._template(`
         <section class="vl-col--1-1 vl-tab__pane" 
           data-vl-tab-pane tabindex="0" 
           role="tabpanel" 
-          id="${id}-pane" 
+          id="${(tp.id)}-pane" 
           hidden="hidden">
-          <slot name="${id}-${index}"></slot>
+          <slot name="${(tp.id)}-slot"></slot>
         </section>
       `));
     });
@@ -125,17 +124,6 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 }
 
-export class VlTabPane extends vlElement(HTMLElement) {
-  static get is() {
-    return 'vl-tabs-pane';
-  }
-
-  constructor() {
-    super(`<slot></slot>`);
-  }
-}
-
 awaitUntil(() => window.vl && window.vl.tabs).then(() => {
   define(VlTabs.is, VlTabs);
-  define(VlTabPane.is, VlTabPane);
 });

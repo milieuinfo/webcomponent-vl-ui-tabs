@@ -16,7 +16,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   constructor() {
     super();
     this.classList.add('vl-tab');
-    const a = this.__LinkElementTemplate.firstElementChild;
+    const a = this.__linkElementTemplate.firstElementChild;
     a.appendChild(this.childNodes[0]);
     this.appendChild(a);
   }
@@ -25,7 +25,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
     return this.querySelector('#tabLink');
   }
 
-  get __LinkElementTemplate() {
+  get __linkElementTemplate() {
     return this._template(`<a id="tabLink" class="vl-tab__link" data-vl-tab role="tab"></a>`);
   }
 

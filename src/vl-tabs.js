@@ -24,7 +24,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt'];
+    return ['alt', 'responsive-label'];
   }
 
   constructor() {
@@ -44,7 +44,7 @@ export class VlTabs extends vlElement(HTMLElement) {
           data-vl-tabs-toggle aria-expanded="false" 
           class="vl-tabs__toggle" 
           data-vl-close="false">
-          <span>Navigatie</span>  
+          <span id="data-vl-tabs-responsive-label">Navigatie</span>  
         </button>
       </div>
     </div>`);
@@ -98,6 +98,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return this.shadowRoot.getElementById('tabs');
   }
 
+  get __responsiveLabel() {
+    return this.shadowRoot.getElementById('data-vl-tabs-responsive-label');
+  }
+
   get __tabPanes() {
     return this.querySelectorAll(VlTabPane.is);
   }
@@ -107,6 +111,16 @@ export class VlTabs extends vlElement(HTMLElement) {
       this.__tabList.classList.add('vl-tabs--alt');
     } else {
       this.__tabList.classList.remove('vl-tabs--alt');
+    }
+  }
+
+  _responsiveLabelChangedCallback(oldValue, newValue) {
+    if (newValue) {
+      this.__tabs.setAttribute('data-vl-tabs-toggle', newValue);
+      this.__responsiveLabel.innerHTML = newValue;
+    } else {
+      this.__tabs.setAttribute('data-vl-tabs-toggle', 'Navigatie');
+      this.__responsiveLabel.innerHTML = 'Navigatie';
     }
   }
 }

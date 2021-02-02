@@ -23,6 +23,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'vl-tabs';
   }
 
+  static get _observedAttributes() {
+    return ['alt'];
+  }
+
   constructor() {
     super(`
     <style>
@@ -34,7 +38,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     </style>
     <div id="tabs" data-vl-tabs data-vl-tabs-responsive-label="Navigatie">
       <div id="tabsWrapper" class="vl-tabs__wrapper">
-        <ul id="tabList" class="vl-tabs vl-tabs--alt" data-vl-tabs-list role="tablist">
+        <ul id="tabList" class="vl-tabs" data-vl-tabs-list role="tablist">
         </ul>  
         <button type="button" 
           data-vl-tabs-toggle aria-expanded="false" 
@@ -96,6 +100,14 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   get __tabPanes() {
     return this.querySelectorAll(VlTabPane.is);
+  }
+
+  _altChangedCallback(oldValue, newValue) {
+    if (this.hasAttribute('data-vl-alt')) {
+      this.__tabList.classList.add('vl-tabs--alt');
+    } else {
+      this.__tabList.classList.remove('vl-tabs--alt');
+    }
   }
 }
 

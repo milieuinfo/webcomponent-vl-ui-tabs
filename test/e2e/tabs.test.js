@@ -17,4 +17,36 @@ describe('vl-tabs', async () => {
     await assert.eventually.equal(tabElements[1].getText(), 'Metro, tram en bus');
     await assert.eventually.equal(tabElements[2].getText(), 'Fiets');
   });
+
+  it('als gebruiker kan ik na het selecteren van een tab de tab specifieke content zien', async () => {
+    let tabs = await vlTabsPage.getTabs();
+    await assert.eventually.isFalse(tabs.hasContent());
+
+    let tabElements = await tabs.getTabs();
+    await tabElements[0].click();
+    tabs = await vlTabsPage.getTabs();
+    await assert.eventually.isTrue(tabs.hasContent());
+    let tabContent = await tabs.getContentSlotElement();
+    await assert.eventually.equal(tabContent.getText(), 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.');
+
+    tabElements = await tabs.getTabs();
+    await tabElements[1].click();
+    tabs = await vlTabsPage.getTabs();
+    tabContent = await tabs.getContentSlotElement();
+    await assert.eventually.equal(tabContent.getText(), 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+
+    tabElements = await tabs.getTabs();
+    await tabElements[2].click();
+    tabs = await vlTabsPage.getTabs();
+    tabContent = await tabs.getContentSlotElement();
+    await assert.eventually.equal(tabContent.getText(), 'Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.');
+  });
+
+  it('als gebruiker zie ik het verschil tussen een alt tabs en een gewone tabs', async () => {
+    const tabs = await vlTabsPage.getTabs();
+    const altTabs = await vlTabsPage.getAltTabs();
+
+    await assert.eventually.isFalse(tabs.isAlt());
+    await assert.eventually.isTrue(altTabs.isAlt());
+  });
 });

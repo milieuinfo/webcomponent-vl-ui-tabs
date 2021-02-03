@@ -25,7 +25,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt', 'responsive-label'];
+    return ['alt', 'responsive-label', 'active-tab'];
   }
 
   constructor() {
@@ -48,6 +48,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     this._renderTabs();
     this._renderSections();
     this.__dress();
+    this.__updateActiveTab(this.getAttribute('data-vl-active-tab'));
   }
 
   get _dressed() {
@@ -61,8 +62,21 @@ export class VlTabs extends vlElement(HTMLElement) {
   __dress() {
     if (!this._dressed) {
       vl.tabs.dress(this.shadowRoot);
-      this.setAttribute(VlTabs._dressedAttributeName, '');
+      this.setAttribute(VlTabs._dressedAttributeName, 'true');
     }
+  }
+
+  async ready() {
+    await awaitUntil(() => this._dressed === true);
+  }
+
+  async __updateActiveTab(activeTab) {
+    await this.ready();
+    this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
+      if (tb.id === activeTab+'-tab') {
+        tb.link.click();
+      }
+    });
   }
 
   get __tabs() {
@@ -117,6 +131,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     const value = newValue || 'Navigatie';
     this.__tabs.setAttribute('data-vl-tabs-responsive-label', value);
     this.__responsiveLabel.innerHTML = value;
+  }
+
+  _activeTabChangedCallback(oldValue, newValue) {
+    this.__updateActiveTab(newValue);
   }
 }
 

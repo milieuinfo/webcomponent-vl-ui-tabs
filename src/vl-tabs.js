@@ -46,7 +46,22 @@ export class VlTabs extends vlElement(HTMLElement) {
   connectedCallback() {
     this._renderTabs();
     this._renderSections();
-    vl.tabs.dress(this.shadowRoot);
+    this.__dress();
+  }
+
+  get _dressed() {
+    return !!this.getAttribute(VlTabs._dressedAttributeName);
+  }
+
+  static get _dressedAttributeName() {
+    return 'data-vl-tabs-dressed';
+  }
+
+  __dress() {
+    if (!this._dressed) {
+      vl.tabs.dress(this.shadowRoot);
+      this.setAttribute(VlTabs._dressedAttributeName, '');
+    }
   }
 
   get __tabs() {
@@ -70,7 +85,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     [...this.__tabPanes].forEach((tabPane) => {
       const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
+        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
           ${(tabPane.title)}
         </li>
       `));
@@ -82,7 +97,7 @@ export class VlTabs extends vlElement(HTMLElement) {
       tabPane.setAttribute('slot', tabPane.id + '-slot');
 
       this.__tabs.appendChild(this._template(`
-        <section id="${(tabPane.id)}-pane" is="vl-tab-section">
+        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}-tab">
           <slot name="${(tabPane.id)}-slot"></slot>
         </section>
       `));

@@ -1,8 +1,4 @@
-import {
-  awaitUntil,
-  define,
-  vlElement,
-} from 'vl-ui-core';
+import {define, vlElement} from 'vl-ui-core';
 
 export class VlTabPane extends vlElement(HTMLElement) {
   static get is() {

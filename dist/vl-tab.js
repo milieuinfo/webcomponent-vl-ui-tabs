@@ -1,8 +1,4 @@
-import {
-  awaitUntil,
-  define,
-  nativeVlElement,
-} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import {nativeVlElement, define} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
 export class VlTab extends nativeVlElement(HTMLLIElement) {
   static get is() {
@@ -15,36 +11,35 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
 
   constructor() {
     super();
+    this._processClasses();
+    this._processLinkElement();
+  }
+
+  get __tabLink() {
+    return this.querySelector('.vl-tab__link');
+  }
+
+  get __linkElementTemplate() {
+    return this._template(`<a id="tabLink" class="vl-tab__link" data-vl-tab role="tab"></a>`);
+  }
+
+  _processClasses() {
     this.classList.add('vl-tab');
-    const a = this.__LinkElementTemplate.firstElementChild;
+  }
+
+  _processLinkElement() {
+    const a = this.__linkElementTemplate.firstElementChild;
     a.appendChild(this.childNodes[0]);
     this.appendChild(a);
   }
 
-  get __tabLink() {
-    return this.querySelector('#tabLink');
-  }
-
-  get __LinkElementTemplate() {
-    return this._template(`<a id="tabLink" class="vl-tab__link" data-vl-tab role="tab"></a>`);
-  }
-
-  set href(link) {
-    return this.setAttribute('data-vl-href', link);
-  }
-
-  set id(id) {
-    return this.setAttribute('data-vl-id', id);
-  }
-
   _hrefChangedCallback(oldValue, newValue) {
-    // this.__href = newValue;
     this.__tabLink.setAttribute('href', newValue);
   }
 
   _idChangedCallback(oldValue, newValue) {
-    // this.__id = newValue;
     this.__tabLink.setAttribute('id', newValue);
+    this.__tabLink.setAttribute('aria-controls', newValue+'-pane');
   }
 }
 

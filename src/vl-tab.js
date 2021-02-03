@@ -16,7 +16,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   get __tabLink() {
-    return this.querySelector('#tabLink');
+    return this.querySelector('.vl-tab__link');
   }
 
   get __linkElementTemplate() {
@@ -39,6 +39,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
 
   _idChangedCallback(oldValue, newValue) {
     this.__tabLink.setAttribute('id', newValue);
+    this.__tabLink.setAttribute('aria-controls', newValue+'-pane');
   }
 }
 

@@ -57,7 +57,7 @@
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
           should.exist(shadowRoot.querySelector(`#${val}-tab`));
           should.exist(shadowRoot.querySelector(`[name=${val}-slot]`));
-        })
+        });
       });
 
       test('alternative tabs versie heeft juiste klasse', () => {
@@ -70,12 +70,12 @@
         const shadowRoot = tabs.shadowRoot;
 
         const possibleValues = ['trein-tab', 'metro-tram-bus-tab', 'fiets-tab'];
-          shadowRoot.querySelectorAll(`vl-tab`).forEach(node => {
-            const a = node.querySelector('a');
-            should.exist(a);
-            assert.isTrue(a.classList.contains('vl-tab__link'))
-            assert.isTrue(possibleValues.indexOf(a.id) > -1);
-          })
+        shadowRoot.querySelectorAll(`vl-tab`).forEach((node) => {
+          const a = node.querySelector('a');
+          should.exist(a);
+          assert.isTrue(a.classList.contains('vl-tab__link'));
+          assert.isTrue(possibleValues.indexOf(a.id) > -1);
+        });
       });
     });
   </script>

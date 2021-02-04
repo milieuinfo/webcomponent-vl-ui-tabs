@@ -23,6 +23,10 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
     return this.querySelector('.vl-tab__link');
   }
 
+  get active() {
+    return this.classList.contains('vl-tab--active');
+  }
+
   get __linkElementTemplate() {
     return this._template(`<a id="tabLink" class="vl-tab__link" data-vl-tab role="tab"></a>`);
   }

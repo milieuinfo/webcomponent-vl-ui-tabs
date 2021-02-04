@@ -47,6 +47,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   connectedCallback() {
     this._renderTabs();
     this._renderSections();
+    this.__registerActiveTabListeners();
     this.__dress();
     this.__updateActiveTab(this.getAttribute('data-vl-active-tab'));
   }
@@ -73,7 +74,9 @@ export class VlTabs extends vlElement(HTMLElement) {
   async __updateActiveTab(activeTab) {
     await this.ready();
     this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
-      if (tb.id === activeTab+'-tab') {
+      // TODO !tb.active is nodig om loop te voorkomen door
+      //  active-tab te wijzigen bij click in __tabEventListener.
+      if (tb.id === activeTab && !tb.active) {
         tb.link.click();
       }
     });
@@ -100,7 +103,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     [...this.__tabPanes].forEach((tabPane) => {
       const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
+        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
           ${(tabPane.title)}
         </li>
       `));
@@ -112,7 +115,7 @@ export class VlTabs extends vlElement(HTMLElement) {
       tabPane.setAttribute('slot', tabPane.id + '-slot');
 
       this.__tabs.appendChild(this._template(`
-        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}-tab">
+        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}">
           <slot name="${(tabPane.id)}-slot"></slot>
         </section>
       `));
@@ -135,6 +138,26 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _activeTabChangedCallback(oldValue, newValue) {
     this.__updateActiveTab(newValue);
+  }
+
+  __registerActiveTabListeners() {
+    this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
+      this.__tabEventListener(tb);
+    });
+  }
+
+  __tabEventListener(tb) {
+    tb.link.addEventListener('click', () => {
+      // TODO moet deze check hier? Indien deze check nodig is, is de setAttribute dat ook.
+      //  Indien die niet mee verandert en de afnemer houdt geen rekening met deze change event,
+      //  dan zal de change event niet uitgestuurd worden als er terug op de initiële tab geklikt wordt.
+      if (this.getAttribute('data-vl-active-tab') !== tb.link.id) {
+        this.dispatchEvent(new CustomEvent('change',
+            {detail: {activeTab: tb.id}, bubbles: true, composed: true}));
+        // TODO dit is dan two way binding, wat niet meer echt ok is dacht ik?
+        this.setAttribute('data-vl-active-tab', tb.id);
+      }
+    });
   }
 }
 

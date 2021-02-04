@@ -47,6 +47,60 @@ export class VlTabs extends vlElement(HTMLElement) {
     this._renderTabs();
     this._renderSections();
     this.__dress();
+    this._observer = this.__observeChildElements((mutation) => {
+      mutation.forEach((m) => {
+        [...m.addedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
+          this.__addObservedTabs(node);
+        });
+        [...m.removedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
+          this.__removeObservedTabs(node);
+        });
+      });
+    });
+  }
+
+  disconnectedCallback() {
+    this._observer.disconnect();
+  }
+
+  __observeChildElements(callback) {
+    const observer = new MutationObserver(callback);
+    observer.observe(this,
+        {childList: true, attributes: false, subtree: false});
+    return observer;
+  }
+
+  __addObservedTabs(node) {
+    // get location of tab
+    const i = [...this.__tabPanes]
+        .map((tabPane) => tabPane.getAttribute('data-vl-id'))
+        .indexOf(node.getAttribute('data-vl-id'));
+
+    const tabPaneElement = this.__tabSectionElement(this.__tabPanes[i]);
+    const listElement = this.__tabListElement(this.__tabPanes[i]);
+    // add event listener to new tab for active-tab change event
+    // this.__tabEventListener(tabPaneElement);
+
+    if (i === this.__tabPanes.length - 1) {
+      this.__tabList.appendChild(listElement);
+      this.__tabs.appendChild(tabPaneElement);
+    } else {
+      // i = location where new tab needs to be, where currently a tab is.
+      this.__tabList.insertBefore(listElement,
+          this.__tabList.children[i]);
+      // i+1 because of tabsWrapper
+      this.__tabs.insertBefore(tabPaneElement,
+          this.__tabs.children[i+1]);
+    }
+    vl.tabs.dress(this.shadowRoot);
+  }
+
+  __removeObservedTabs(node) {
+    const listElement = this._shadow.querySelector('[data-vl-id="'+node.id+'"');
+    const tabPaneElement = this._shadow.querySelector('#'+node.id+'-pane');
+    this.__tabList.removeChild(listElement);
+    this.__tabs.removeChild(tabPaneElement);
+    vl.tabs.dress(this.shadowRoot);
   }
 
   get _dressed() {
@@ -83,25 +137,32 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderTabs() {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tabPane) => {
-      const pathname = window.location.pathname;
-      this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
-          ${(tabPane.title)}
-        </li>
-      `));
+      this.__tabList.appendChild(this.__tabListElement(tabPane));
     });
   }
 
   _renderSections() {
     [...this.__tabPanes].forEach((tabPane) => {
-      tabPane.setAttribute('slot', tabPane.id + '-slot');
+      this.__tabs.appendChild(this.__tabSectionElement(tabPane));
+    });
+  }
 
-      this.__tabs.appendChild(this._template(`
-        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}-tab">
+  __tabListElement(tabPane) {
+    const pathname = window.location.pathname;
+    return this._template(`
+        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
+          ${(tabPane.title)}
+        </li>
+      `);
+  }
+
+  __tabSectionElement(tabPane) {
+    tabPane.setAttribute('slot', tabPane.id + '-slot');
+    return this._template(`
+        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}">
           <slot name="${(tabPane.id)}-slot"></slot>
         </section>
-      `));
-    });
+      `);
   }
 
   _altChangedCallback(oldValue, newValue) {

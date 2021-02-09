@@ -1,0 +1,53 @@
+{
+	"name": "vl-ui-tabs",
+	"version": "0.0.0",
+	"description": "Use tab navigation to break related information into smaller chuncks of content. When working with tabs, some content is hidden. Therefore it's important to label the tabs wisely, allowing the user to know exactly what to expect in a tab. On mobile, tab navigation is transformed into a dropdown menu.",
+	"author": "DIDM",
+	"license": "MIT",
+	"main": "./src/index.js",
+	"exports": {
+		"require": "./index.js",
+		"import": "./src/index.js",
+		"node": "./index.js",
+		"default": "./index.js"
+	},
+	"homepage": "https://github.com/milieuinfo/webcomponent-vl-ui-tabs#readme",
+	"bugs": {
+		"url": "https://github.com/milieuinfo/webcomponent-vl-ui-tabs/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/milieuinfo/webcomponent-vl-ui-tabs.git"
+	},
+	"publishConfig": {
+		"registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
+	},
+	"scripts": {
+		"prepare": "npm update --dev vl-ui-util && npm run prepare:util",
+		"prepare:util": "npm explore vl-ui-util -- npm run util",
+		"test": "npm explore vl-ui-util -- npm run test:component",
+		"test:grid": "npm explore vl-ui-util -- npm run test:component:grid",
+		"test:unit": "npm explore vl-ui-util -- npm run test:component:unit",
+		"test:unit:grid": "npm explore vl-ui-util -- npm run test:component:unit:grid",
+		"test:e2e": "npm explore vl-ui-util -- npm run test:component:e2e",
+		"test:e2e:grid": "npm explore vl-ui-util -- npm run test:component:e2e:browserstack",
+		"release": "npm explore vl-ui-util -- npm run release",
+		"release:prepare": "npm explore vl-ui-util -- npm run release-component:prepare $(pwd) tabs",
+		"release:testless": "np --yolo",
+		"demo": "http-server"
+	},
+	"dependencies": {
+		"@govflanders/vl-ui-tabs": "^3.12.3",
+		"vl-ui-core": "^7.1.1"
+	},
+	"peerDependencies": {
+		"vl-ui-core": "^7.0.2"
+	},
+	"devDependencies": {
+		"@govflanders/vl-ui-core": "^4.1.3",
+		"@govflanders/vl-ui-util": "^3.12.3",
+		"vl-ui-body": "^1.0.8",
+		"vl-ui-grid": "^3.2.1",
+		"vl-ui-util": "^5.3.7"
+	}
+}

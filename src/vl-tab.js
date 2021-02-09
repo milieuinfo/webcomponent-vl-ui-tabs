@@ -3,10 +3,10 @@ import {nativeVlElement, define} from '/node_modules/vl-ui-core/dist/vl-core.js'
 /**
  * VlTab
  * @class
- * @classdesc De vl-tab is een onderdeel dat specifieke informatie bevat.
+ * @classdesc De vl-tab is een onderdeel van de vl-tabs dat een manier geeft aan de gebruiker om de tab informatie te openen.
  *
- * @extends HTMLElement
- * @mixes vlElement
+ * @extends HTMLLIElement
+ * @mixes nativeVlElement
  *
  * @property {boolean} data-vl-href - Attribuut wordt gebruikt om de verborgen informatie van de tab zichtbaar te maken via een klik actie of via de hash van de URL.
  * @property {boolean} data-vl-id - Attribuut wordt gebruikt om de verborgen informatie van de tab sectie te koppelen aan de tab.

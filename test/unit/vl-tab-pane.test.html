@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <script type="module" src="../../src/vl-tabs-all.js"></script>
+</head>
+
+<body>
+  <test-fixture id="vl-tab-pane-fixture">
+    <template>
+      <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
+        Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+      </vl-tabs-pane>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('vl-tab-pane', () => {
+      test('kan het id en title attribuut opvragen', () => {
+        const tabPane = fixture('vl-tab-pane-fixture');
+        ['id', 'title'].forEach((attribute) => {
+          assert.equal(tabPane[attribute], tabPane.getAttribute(`data-vl-${attribute}`));
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

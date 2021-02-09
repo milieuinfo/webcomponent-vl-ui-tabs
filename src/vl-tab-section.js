@@ -1,5 +1,18 @@
 import {nativeVlElement, define} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
+/**
+ * VlTab
+ * @class
+ * @classdesc De vl-tab-section is een onderdeel van de vl-tabs dat de specifieke tab informatie bevat.
+ *
+ * @extends HTMLElement
+ * @mixes nativeVlElement
+ *
+ * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/releases/latest|Release notes}
+ * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/issues|Issues}
+ * @see {@link https://webcomponenten.omgeving.vlaanderen.be/demo/vl-tabs.html|Demo}
+ *
+ */
 export class VlTabSection extends nativeVlElement(HTMLElement) {
   static get is() {
     return 'vl-tab-section';

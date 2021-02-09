@@ -1,5 +1,5 @@
 import {awaitUntil, define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
-import {VlTabPane} from '/src/vl-tab-pane.js';
+import {VlTabsPane} from '/src/vl-tab-pane.js';
 import '/src/vl-tab.js';
 import '/lib/tabs.js';
 
@@ -77,7 +77,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get __tabPanes() {
-    return this.querySelectorAll(VlTabPane.is);
+    return this.querySelectorAll(VlTabsPane.is);
   }
 
   _renderTabs() {

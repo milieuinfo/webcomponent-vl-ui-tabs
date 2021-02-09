@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <script type="module" src="../../src/vl-tabs-all.js"></script>
+</head>
+
+<body>
+  <test-fixture id="vl-tab-fixture">
+    <template>
+      <li is="vl-tab" data-vl-href="tab-href" data-vl-id="tab-id">
+        Tab tekst
+      </li>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('vl-tab', () => {
+      test('heeft de vl-tab class', () => {
+        const tab = fixture('vl-tab-fixture');
+        assert.isTrue(tab.classList.contains('vl-tab'));
+      });
+
+      test('het link element wordt correct gegenereerd', () => {
+        const tab = fixture('vl-tab-fixture');
+        const link = tab.querySelector('a');
+        assert.isTrue(link.classList.contains('vl-tab__link'));
+        assert.isTrue(link.hasAttribute('data-vl-tab'));
+        assert.equal(link.getAttribute('role'), 'tab');
+        assert.equal(link.id, tab.getAttribute('data-vl-id'));
+        assert.equal(link.getAttribute('href'), tab.getAttribute('data-vl-href'));
+        assert.equal(link.getAttribute('aria-controls'), `${tab.getAttribute('data-vl-href')}-pane`);
+      });
+    });
+  </script>
+</body>
+
+</html>

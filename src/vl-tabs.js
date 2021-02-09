@@ -6,7 +6,7 @@ import '/lib/tabs.js';
 /**
  * VlTabs
  * @class
- * @classdesc Use tab navigation to break related information into smaller chuncks of content. When working with tabs, some content is hidden. Therefore it's important to label the tabs wisely, allowing the user to know exactly what to expect in a tab. On mobile, tab navigation is transformed into a dropdown menu.
+ * @classdesc Gebruik de vl-tabs navigatie om veel maar gerelateerde informatie in kleinere stukken te verdelen. Wanneer er met tabs gewerkt wordt, zal een deel van de informatie verborgen worden. Het is daardoor belangrijk om de gebruiker hier attent op te maken en duidelijk over te brengen welke informatie in een tab zichtbaar zal zijn. Op mobiele toestellen zal de tab navigatie gevisualiseerd worden via een dropdown menu.
  *
  * @extends HTMLElement
  * @mixes vlElement
@@ -34,8 +34,8 @@ export class VlTabs extends vlElement(HTMLElement) {
       @import '/src/style.css';
     </style>
     <div id="tabs" data-vl-tabs data-vl-tabs-responsive-label="Navigatie">
-      <div id="tabsWrapper" class="vl-tabs__wrapper">
-        <ul id="tabList" class="vl-tabs" data-vl-tabs-list role="tablist"></ul>  
+      <div id="tabs-wrapper" class="vl-tabs__wrapper">
+        <ul id="tab-list" class="vl-tabs" data-vl-tabs-list role="tablist"></ul>  
         <button type="button" data-vl-tabs-toggle aria-expanded="false" class="vl-tabs__toggle" data-vl-close="false">
           <span id="data-vl-tabs-responsive-label">Navigatie</span>  
         </button>
@@ -69,7 +69,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get __tabList() {
-    return this.shadowRoot.getElementById('tabList');
+    return this.shadowRoot.getElementById('tab-list');
   }
 
   get __responsiveLabel() {

@@ -41,7 +41,6 @@ export class VlTabs extends vlElement(HTMLElement) {
         </button>
       </div>
     </div>`);
-    console.log('bizar');
   }
 
   connectedCallback() {
@@ -60,7 +59,6 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __dress() {
     if (!this._dressed) {
-      console.log('dress');
       vl.tabs.dress(this.shadowRoot);
       this.setAttribute(VlTabs._dressedAttributeName, '');
     }

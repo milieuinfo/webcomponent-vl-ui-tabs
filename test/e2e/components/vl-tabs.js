@@ -21,7 +21,7 @@ class VlTabs extends VlElement {
 
   async hasContent() {
     try {
-      await this.driver.wait(async () => this.getContent(), 2000);
+      await this.driver.wait(async () => this.getContent(), 1000);
       return true;
     } catch (e) {
       return false;

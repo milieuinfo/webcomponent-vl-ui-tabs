@@ -69,7 +69,6 @@
           const index = [...tabSections].indexOf(tabSection);
           const tabPane = tabPanes[index];
           assert.equal(tabPane.getAttribute('slot'), `${tabPane.getAttribute('data-vl-id')}-slot`);
-          assert.equal(tabSection.getAttribute('aria-labelledby'), `${tabPane.getAttribute('data-vl-id')}-tab`);
           should.exist(tabSection.querySelector(`slot[name="${tabPane.getAttribute('data-vl-id')}-slot"]`));
         });
       });

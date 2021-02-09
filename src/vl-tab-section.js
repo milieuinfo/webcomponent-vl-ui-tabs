@@ -21,6 +21,7 @@ export class VlTabSection extends nativeVlElement(HTMLElement) {
     this.setAttribute('tabindex', 0);
     this.setAttribute('role', 'tabpanel');
     this.setAttribute('hidden', 'hidden');
+    this.setAttribute('aria-labelledby', `${this.id}-tab`);
   }
 }
 

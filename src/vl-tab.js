@@ -39,7 +39,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
 
   _idChangedCallback(oldValue, newValue) {
     this.__tabLink.setAttribute('id', newValue);
-    this.__tabLink.setAttribute('aria-controls', newValue+'-pane');
+    this.__tabLink.setAttribute('aria-controls', `${newValue}-pane`);
   }
 }
 

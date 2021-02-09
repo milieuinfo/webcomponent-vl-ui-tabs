@@ -95,7 +95,6 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderSections() {
     [...this.__tabPanes].forEach((tabPane) => {
       tabPane.setAttribute('slot', tabPane.id + '-slot');
-
       this.__tabs.appendChild(this._template(`
         <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}-tab">
           <slot name="${(tabPane.id)}-slot"></slot>

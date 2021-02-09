@@ -7,75 +7,78 @@
   <script src="../../../web-component-tester/browser.js"></script>
 
   <script type="module" src="../../src/vl-tabs-all.js"></script>
+  <script src="/node_modules/sinon/pkg/sinon.js"></script>
 </head>
 
 <body>
   <test-fixture id="vl-tabs-fixture">
     <template>
-      <form>
-        <vl-tabs id="tabs">
-          <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
-            Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
-          </vl-tabs-pane>
-          <vl-tabs-pane data-vl-id="metro-tram-bus" data-vl-title="Metro, tram en bus">
-            Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </vl-tabs-pane>
-          <vl-tabs-pane data-vl-id="fiets" data-vl-title="Fiets">
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          </vl-tabs-pane>
-        </vl-tabs>
-      </form>
-    </template>
-  </test-fixture>
-  <test-fixture id="vl-tabs-alt-fixture">
-    <template>
-      <form>
-        <vl-tabs id="tabs" data-vl-alt>
-          <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
-            Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
-          </vl-tabs-pane>
-          <vl-tabs-pane data-vl-id="metro-tram-bus" data-vl-title="Metro, tram en bus">
-            Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </vl-tabs-pane>
-          <vl-tabs-pane data-vl-id="fiets" data-vl-title="Fiets">
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          </vl-tabs-pane>
-        </vl-tabs>
-      </form>
+      <vl-tabs id="tabs">
+        <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
+          Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+        </vl-tabs-pane>
+        <vl-tabs-pane data-vl-id="metro-tram-bus" data-vl-title="Metro, tram en bus">
+          Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </vl-tabs-pane>
+        <vl-tabs-pane data-vl-id="fiets" data-vl-title="Fiets">
+          Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+        </vl-tabs-pane>
+      </vl-tabs>
     </template>
   </test-fixture>
 
   <script type="module">
+    import {VlTabs} from '../../src/vl-tabs.js';
 
     suite('vl-tabs', () => {
       const should = chai.should();
+      const sandbox = sinon.createSandbox();
+    
+      test('alternative tabs versie heeft juiste klasse', () => {
+        const tabs = fixture('vl-tabs-fixture');
+        assert.isFalse(tabs.__tabList.classList.contains('vl-tabs--alt'));
+        tabs.setAttribute('data-vl-alt', '');
+        assert.isTrue(tabs.__tabList.classList.contains('vl-tabs--alt'));
+        tabs.removeAttribute('data-vl-alt');
+        assert.isFalse(tabs.__tabList.classList.contains('vl-tabs--alt'));
+      });
 
-      test('alle tabs bestaan', () => {
-        const tabs = fixture('vl-tabs-fixture').querySelector('#tabs');
-        const shadowRoot = tabs.shadowRoot;
+      test('de tabs worden correct gegenereerd', () => {
+        const element = fixture('vl-tabs-fixture');
+        const tabPanes = element.querySelectorAll('vl-tabs-pane');
+        const tabs = element.__tabList.querySelectorAll('[is="vl-tab"]');
+        assert.lengthOf(tabs, tabPanes.length);
 
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
-          should.exist(shadowRoot.querySelector(`#${val}-tab`));
-          should.exist(shadowRoot.querySelector(`[name=${val}-slot]`));
+          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}-tab`);
+          const index = [...tabs].indexOf(tab);
+          const tabPane = tabPanes[index];
+          assert.equal(tab.getAttribute('data-vl-href'), `${window.location.pathname}#${tabPane.getAttribute('data-vl-id')}`);
+          assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
       });
 
-      test('alternative tabs versie heeft juiste klasse', () => {
-        const tabs = fixture('vl-tabs-alt-fixture').querySelector('#tabs');
-        assert.isTrue(tabs.__tabList.classList.contains('vl-tabs--alt'));
+      test('de tab sections worden correct gegenereerd', () => {
+        const element = fixture('vl-tabs-fixture');
+        const tabPanes = element.querySelectorAll('vl-tabs-pane');
+        const tabSections = element.__tabs.querySelectorAll('[is="vl-tab-section"]');
+        assert.lengthOf(tabSections, tabPanes.length);
+
+        ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
+          const tabSection = [...tabSections].find((tabSection) => tabSection.id === `${val}-pane`);
+          const index = [...tabSections].indexOf(tabSection);
+          const tabPane = tabPanes[index];
+          assert.equal(tabPane.getAttribute('slot'), `${tabPane.getAttribute('data-vl-id')}-slot`);
+          assert.equal(tabSection.getAttribute('aria-labelledby'), `${tabPane.getAttribute('data-vl-id')}-tab`);
+          should.exist(tabSection.querySelector(`slot[name="${tabPane.getAttribute('data-vl-id')}-slot"]`));
+        });
       });
 
-      test('link wrapper in tab wordt correct gezet', () => {
-        const tabs = fixture('vl-tabs-fixture').querySelector('#tabs');
-        const shadowRoot = tabs.shadowRoot;
-
-        const possibleValues = ['trein-tab', 'metro-tram-bus-tab', 'fiets-tab'];
-        shadowRoot.querySelectorAll(`vl-tab`).forEach((node) => {
-          const a = node.querySelector('a');
-          should.exist(a);
-          assert.isTrue(a.classList.contains('vl-tab__link'));
-          assert.isTrue(possibleValues.indexOf(a.id) > -1);
-        });
+      test('de dress functie wordt aangeroepen', () => {
+        sandbox.spy(vl.tabs, 'dress');
+        const element = fixture('vl-tabs-fixture');
+        assert(vl.tabs.dress.calledWith(element.shadowRoot));
+        assert.isTrue(element.hasAttribute(VlTabs._dressedAttributeName));
       });
     });
   </script>

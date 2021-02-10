@@ -25,7 +25,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt', 'responsive-label'];
+    return ['alt', 'responsive-label', 'active-tab'];
   }
 
   constructor() {
@@ -46,7 +46,62 @@ export class VlTabs extends vlElement(HTMLElement) {
   connectedCallback() {
     this._renderTabs();
     this._renderSections();
+    this.__registerActiveTabListeners();
     this.__dress();
+    this._observer = this.__observeChildElements((mutation) => {
+      mutation.forEach((m) => {
+        [...m.addedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
+          this.__addObservedTabs(node);
+        });
+        [...m.removedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
+          this.__removeObservedTabs(node);
+        });
+      });
+    });
+  }
+
+  disconnectedCallback() {
+    this._observer.disconnect();
+  }
+
+  __observeChildElements(callback) {
+    const observer = new MutationObserver(callback);
+    observer.observe(this,
+        {childList: true, attributes: false, subtree: false});
+    return observer;
+  }
+
+  __addObservedTabs(node) {
+    // get location of tab
+    const i = [...this.__tabPanes]
+        .map((tabPane) => tabPane.getAttribute('data-vl-id'))
+        .indexOf(node.getAttribute('data-vl-id'));
+
+    const tabPaneElement = this.__tabSectionElement(this.__tabPanes[i]);
+    const listElement = this.__tabListElement(this.__tabPanes[i]);
+    // add event listener to new tab for active-tab change event
+    // this.__tabEventListener(tabPaneElement);
+
+    if (i === this.__tabPanes.length - 1) {
+      this.__tabList.appendChild(listElement);
+      this.__tabs.appendChild(tabPaneElement);
+    } else {
+      // i = location where new tab needs to be, where currently a tab is.
+      this.__tabList.insertBefore(listElement,
+          this.__tabList.children[i]);
+      // i+1 because of tabsWrapper
+      this.__tabs.insertBefore(tabPaneElement,
+          this.__tabs.children[i+1]);
+    }
+    vl.tabs.dress(this.shadowRoot);
+  }
+
+  __removeObservedTabs(node) {
+    const listElement = this._shadow.querySelector('[data-vl-id="'+node.id+'"');
+    const tabPaneElement = this._shadow.querySelector('#'+node.id+'-pane');
+    this.__tabList.removeChild(listElement);
+    this.__tabs.removeChild(tabPaneElement);
+    vl.tabs.dress(this.shadowRoot);
   }
 
   get _dressed() {
@@ -60,8 +115,23 @@ export class VlTabs extends vlElement(HTMLElement) {
   __dress() {
     if (!this._dressed) {
       vl.tabs.dress(this.shadowRoot);
-      this.setAttribute(VlTabs._dressedAttributeName, '');
+      this.setAttribute(VlTabs._dressedAttributeName, 'true');
     }
+  }
+
+  async ready() {
+    await awaitUntil(() => this._dressed === true);
+  }
+
+  async __updateActiveTab(activeTab) {
+    await this.ready();
+    this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
+      // TODO !tb.active is nodig om loop te voorkomen door
+      //  active-tab te wijzigen bij click in __tabEventListener.
+      if (tb.id === activeTab && !tb.active) {
+        tb.link.click();
+      }
+    });
   }
 
   get __tabs() {
@@ -83,25 +153,32 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderTabs() {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tabPane) => {
-      const pathname = window.location.pathname;
-      this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
-          ${(tabPane.title)}
-        </li>
-      `));
+      this.__tabList.appendChild(this.__tabListElement(tabPane));
     });
   }
 
   _renderSections() {
     [...this.__tabPanes].forEach((tabPane) => {
-      tabPane.setAttribute('slot', tabPane.id + '-slot');
+      this.__tabs.appendChild(this.__tabSectionElement(tabPane));
+    });
+  }
 
-      this.__tabs.appendChild(this._template(`
-        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}-tab">
+  __tabListElement(tabPane) {
+    const pathname = window.location.pathname;
+    return this._template(`
+        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
+          ${(tabPane.title)}
+        </li>
+      `);
+  }
+
+  __tabSectionElement(tabPane) {
+    tabPane.setAttribute('slot', tabPane.id + '-slot');
+    return this._template(`
+        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}">
           <slot name="${(tabPane.id)}-slot"></slot>
         </section>
-      `));
-    });
+      `);
   }
 
   _altChangedCallback(oldValue, newValue) {
@@ -116,6 +193,30 @@ export class VlTabs extends vlElement(HTMLElement) {
     const value = newValue || 'Navigatie';
     this.__tabs.setAttribute('data-vl-tabs-responsive-label', value);
     this.__responsiveLabel.innerHTML = value;
+  }
+
+  _activeTabChangedCallback(oldValue, newValue) {
+    this.__updateActiveTab(newValue);
+  }
+
+  __registerActiveTabListeners() {
+    this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
+      this.__tabEventListener(tb);
+    });
+  }
+
+  __tabEventListener(tb) {
+    tb.link.addEventListener('click', () => {
+      // TODO moet deze check hier? Indien deze check nodig is, is de setAttribute dat ook.
+      //  Indien die niet mee verandert en de afnemer houdt geen rekening met deze change event,
+      //  dan zal de change event niet uitgestuurd worden als er terug op de initiële tab geklikt wordt.
+      if (this.getAttribute('data-vl-active-tab') !== tb.link.id) {
+        this.dispatchEvent(new CustomEvent('change',
+            {detail: {activeTab: tb.id}, bubbles: true, composed: true}));
+        // TODO dit is dan two way binding, wat niet meer echt ok is dacht ik?
+        this.setAttribute('data-vl-active-tab', tb.id);
+      }
+    });
   }
 }
 

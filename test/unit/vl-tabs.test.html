@@ -13,7 +13,7 @@
 <body>
   <test-fixture id="vl-tabs-fixture">
     <template>
-      <vl-tabs id="tabs">
+      <vl-tabs>
         <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
           Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
         </vl-tabs-pane>
@@ -27,12 +27,22 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="vl-tabs-empty-fixture">
+    <template>
+      <vl-tabs></vl-tabs>
+    </template>
+  </test-fixture>
+
   <script type="module">
     import {VlTabs} from '../../src/vl-tabs.js';
 
     suite('vl-tabs', () => {
       const should = chai.should();
       const sandbox = sinon.createSandbox();
+
+      teardown(() => {
+        sandbox.restore();
+      });
     
       test('alternative tabs versie heeft juiste klasse', () => {
         const tabs = fixture('vl-tabs-fixture');
@@ -50,10 +60,10 @@
         assert.lengthOf(tabs, tabPanes.length);
 
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
-          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}-tab`);
+          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
-          assert.equal(tab.getAttribute('data-vl-href'), `${window.location.pathname}#${tabPane.getAttribute('data-vl-id')}`);
+          assert.equal(tab.getAttribute('data-vl-href'), `#${tabPane.getAttribute('data-vl-id')}`);
           assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
       });
@@ -78,6 +88,40 @@
         const element = fixture('vl-tabs-fixture');
         assert(vl.tabs.dress.calledWith(element.shadowRoot));
         assert.isTrue(element.hasAttribute(VlTabs._dressedAttributeName));
+      });
+
+      test('na de dress functie zal de ready promise resolved worden', (done) => {
+        sandbox.spy(vl.tabs, 'dress');
+        const element = fixture('vl-tabs-fixture');
+        element.ready().then(() => done());
+        assert(vl.tabs.dress.called);
+      });
+
+      test('er kunnen dynamisch tabs toegevoegd worden', (done) => {
+        const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
+        const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
+
+        const element = fixture('vl-tabs-empty-fixture');
+        assert.lengthOf(getTabArray(), 0);
+        assert.lengthOf(getTabSectionArray(), 0);
+        element.insertAdjacentHTML('afterbegin', `<vl-tabs-pane data-vl-id="1" data-vl-title="1">1 content</vl-tabs-pane>`);
+        setTimeout(() => {
+          assert.lengthOf(getTabArray(), 1);
+          assert.lengthOf(getTabSectionArray(), 1);
+          element.insertAdjacentHTML('beforeend', `<vl-tabs-pane data-vl-id="3" data-vl-title="3">3 content</vl-tabs-pane>`);
+          setTimeout(() => {
+            assert.lengthOf(getTabArray(), 2);
+            assert.lengthOf(getTabSectionArray(), 2);
+            element.__tabPanes[0].insertAdjacentHTML('afterend', `<vl-tabs-pane data-vl-id="2" data-vl-title="2">2 content</vl-tabs-pane>`);
+            setTimeout(() => {
+              assert.lengthOf(getTabArray(), 3);
+              assert.lengthOf(getTabSectionArray(), 3);
+              assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3']);
+              assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content', '2 content', '3 content']);
+              done();
+            });
+          });
+        });
       });
     });
   </script>

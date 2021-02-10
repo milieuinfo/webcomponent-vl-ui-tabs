@@ -35,6 +35,12 @@
         assert.equal(link.getAttribute('href'), tab.getAttribute('data-vl-href'));
         assert.equal(link.getAttribute('aria-controls'), `${tab.getAttribute('data-vl-href')}-pane`);
       });
+
+      test('kan de tab activeren', (done) => {
+        const tab = fixture('vl-tab-fixture');
+        tab.__linkElement.addEventListener('click', () => done());
+        tab.activate();
+      });
     });
   </script>
 </body>

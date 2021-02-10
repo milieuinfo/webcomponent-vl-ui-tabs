@@ -58,12 +58,12 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   _hrefChangedCallback(oldValue, newValue) {
-    this.__tabLink.setAttribute('href', newValue);
-    this.__tabLink.setAttribute('aria-controls', `${newValue}-pane`);
+    this.link.setAttribute('href', newValue);
+    this.link.setAttribute('aria-controls', `${newValue}-pane`);
   }
 
   _idChangedCallback(oldValue, newValue) {
-    this.__tabLink.id = newValue;
+    this.link.id = newValue;
   }
 }
 

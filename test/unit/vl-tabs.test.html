@@ -13,7 +13,7 @@
 <body>
   <test-fixture id="vl-tabs-fixture">
     <template>
-      <vl-tabs id="tabs">
+      <vl-tabs>
         <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
           Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
         </vl-tabs-pane>
@@ -24,6 +24,12 @@
           Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
         </vl-tabs-pane>
       </vl-tabs>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="vl-tabs-empty-fixture">
+    <template>
+      <vl-tabs></vl-tabs>
     </template>
   </test-fixture>
 
@@ -89,6 +95,33 @@
         const element = fixture('vl-tabs-fixture');
         element.ready().then(() => done());
         assert(vl.tabs.dress.called);
+      });
+
+      test('er kunnen dynamisch tabs toegevoegd worden', (done) => {
+        const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
+        const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
+
+        const element = fixture('vl-tabs-empty-fixture');
+        assert.lengthOf(getTabArray(), 0);
+        assert.lengthOf(getTabSectionArray(), 0);
+        element.insertAdjacentHTML('afterbegin', `<vl-tabs-pane data-vl-id="1" data-vl-title="1">1 content</vl-tabs-pane>`);
+        setTimeout(() => {
+          assert.lengthOf(getTabArray(), 1);
+          assert.lengthOf(getTabSectionArray(), 1);
+          element.insertAdjacentHTML('beforeend', `<vl-tabs-pane data-vl-id="3" data-vl-title="3">3 content</vl-tabs-pane>`);
+          setTimeout(() => {
+            assert.lengthOf(getTabArray(), 2);
+            assert.lengthOf(getTabSectionArray(), 2);
+            element.__tabPanes[0].insertAdjacentHTML('afterend', `<vl-tabs-pane data-vl-id="2" data-vl-title="2">2 content</vl-tabs-pane>`);
+            setTimeout(() => {
+              assert.lengthOf(getTabArray(), 3);
+              assert.lengthOf(getTabSectionArray(), 3);
+              assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3']);
+              assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content', '2 content', '3 content']);
+              done();
+            });
+          });
+        });
       });
     });
   </script>

@@ -47,6 +47,11 @@ export class VlTabs extends vlElement(HTMLElement) {
     this._renderTabs();
     this._renderSections();
     this.__dress();
+    this._observer = this.__observeTabPanes((mutations) => this.__processTabPane(mutations));
+  }
+
+  disconnectedCallback() {
+    this._observer.disconnect();
   }
 
   get _dressed() {
@@ -57,8 +62,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'data-vl-tabs-dressed';
   }
 
-  __dress() {
-    if (!this._dressed) {
+  __dress(forced) {
+    if (!this._dressed || forced) {
       vl.tabs.dress(this.shadowRoot);
       this.setAttribute(VlTabs._dressedAttributeName, '');
     }
@@ -86,29 +91,51 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get __tabPanes() {
-    return this.querySelectorAll(VlTabsPane.is);
+    return [...this.querySelectorAll(VlTabsPane.is)];
+  }
+
+  __getTabTemplate({id, title}) {
+    return this._template(`
+      <li is="vl-tab" data-vl-href="#${id}" data-vl-id="${id}">
+        ${(title)}
+      </li>
+    `);
+  }
+
+  __getTabSectionTemplate({id}) {
+    return this._template(`
+      <section id="${id}-pane" is="vl-tab-section">
+        <slot name="${id}-slot"></slot>
+      </section>
+    `);
+  };
+
+  _addTab({id, title, index}) {
+    const element = this.__getTabTemplate({id, title});
+    if (index && index >= 0) {
+      this.__tabList.insertBefore(element, this.__tabList.children[index]);
+    } else {
+      this.__tabList.appendChild(element);
+    }
+  }
+
+  _addTabSection({id, index}) {
+    this.__tabPanes[index].setAttribute('slot', `${id}-slot`);
+    const element = this.__getTabSectionTemplate({id});
+    if (index && index >= 0) {
+      this.__tabs.insertBefore(element, this.__tabs.children[++index]);
+    } else {
+      this.__tabs.appendChild(element);
+    }
   }
 
   _renderTabs() {
     this.__tabList.innerHTML = '';
-    [...this.__tabPanes].forEach((tabPane) => {
-      this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
-          ${(tabPane.title)}
-        </li>
-      `));
-    });
+    this.__tabPanes.forEach((tabPane) => this._addTab({id: tabPane.id, title: tabPane.title}));
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach((tabPane) => {
-      tabPane.setAttribute('slot', tabPane.id + '-slot');
-      this.__tabs.appendChild(this._template(`
-        <section id="${(tabPane.id)}-pane" is="vl-tab-section">
-          <slot name="${(tabPane.id)}-slot"></slot>
-        </section>
-      `));
-    });
+    this.__tabPanes.forEach((tabPane, index) => this._addTabSection({id: tabPane.id, index: index}));
   }
 
   _altChangedCallback(oldValue, newValue) {
@@ -131,6 +158,22 @@ export class VlTabs extends vlElement(HTMLElement) {
     if (tab) {
       tab.activate();
     }
+  }
+
+  __observeTabPanes(callback) {
+    const observer = new MutationObserver(callback);
+    observer.observe(this, {childList: true});
+    return observer;
+  }
+
+  __processTabPane(mutations) {
+    const tabPanes = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node instanceof VlTabsPane);
+    tabPanes.forEach((tabPane) => {
+      const index = this.__tabPanes.indexOf(tabPane);
+      this._addTab({id: tabPane.id, title: tabPane.title, index: index});
+      this._addTabSection({id: tabPane.id, index: index});
+      this.__dress(true);
+    });
   }
 }
 

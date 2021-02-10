@@ -50,7 +50,7 @@
         assert.lengthOf(tabs, tabPanes.length);
 
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
-          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}-tab`);
+          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
           assert.equal(tab.getAttribute('data-vl-href'), `#${tabPane.getAttribute('data-vl-id')}`);

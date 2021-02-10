@@ -64,8 +64,13 @@ export class VlTabs extends vlElement(HTMLElement) {
     }
   }
 
+  /**
+   * Wacht tot de tab initialisatie klaar is.
+   *
+   * @return {Promise}
+   */
   async ready() {
-    await awaitUntil(() => this._dressed != undefined);
+    return awaitUntil(() => this._dressed != undefined);
   }
 
   get __tabs() {

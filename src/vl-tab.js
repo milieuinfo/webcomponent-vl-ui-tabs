@@ -43,8 +43,10 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
     return this._template(`<a class="vl-tab__link" data-vl-tab role="tab"></a>`);
   }
 
+  /**
+   * Activeer de tab.
+   */
   activate() {
-    this.__tabLinkElement.focus();
     this.__tabLinkElement.click();
   }
 

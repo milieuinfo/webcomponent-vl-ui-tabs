@@ -1,14 +1,18 @@
 const {assert, getDriver} = require('vl-ui-core').Test.Setup;
 const VlTabsPage = require('./pages/vl-tabs.page');
+const VlTabsActiveTabPage = require('./pages/vl-tabs-active-tab.page');
 
 describe('vl-tabs', async () => {
   let vlTabsPage;
+  let vlTabsActiveTabPage;
   const content1 = 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.';
   const content2 = 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const content3 = 'Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.';
 
   beforeEach(() => {
-    vlTabsPage = new VlTabsPage(getDriver());
+    const driver = getDriver();
+    vlTabsPage = new VlTabsPage(driver);
+    vlTabsActiveTabPage = new VlTabsActiveTabPage(driver);
     return vlTabsPage.load();
   });
 
@@ -51,7 +55,8 @@ describe('vl-tabs', async () => {
 
     await vlTabsPage.loadHash('#trein');
     tabs = await vlTabsPage.getTabs();
-    await assert.eventually.isTrue(tabs.hasContent()); const tabContent = await tabs.getContentSlotElement();
+    await assert.eventually.isTrue(tabs.hasContent());
+    const tabContent = await tabs.getContentSlotElement();
     await assert.eventually.equal(tabContent.getText(), content1);
   });
 
@@ -61,5 +66,22 @@ describe('vl-tabs', async () => {
 
     await assert.eventually.isFalse(tabs.isAlt());
     await assert.eventually.isTrue(altTabs.isAlt());
+  });
+
+  it('als gebruiker zie ik onmiddellijk de default actieve tab zijn content zonder zelf actie te moeten ondernemen', async () => {
+    let tabs = await vlTabsPage.getTabs();
+    let tabElements = await tabs.getTabs();
+    await assert.eventually.isFalse(tabElements[0].isActive());
+    await assert.eventually.isFalse(tabElements[1].isActive());
+    await assert.eventually.isFalse(tabElements[2].isActive());
+    await assert.eventually.isFalse(tabs.hasContent());
+
+    await vlTabsActiveTabPage.load();
+    tabs = await vlTabsActiveTabPage.getTabs();
+    tabElements = await tabs.getTabs();
+    await assert.eventually.isFalse(tabElements[0].isActive());
+    await assert.eventually.isFalse(tabElements[1].isActive());
+    await assert.eventually.isTrue(tabElements[2].isActive());
+    await assert.eventually.isTrue(tabs.hasContent());
   });
 });

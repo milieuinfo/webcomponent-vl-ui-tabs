@@ -25,7 +25,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt', 'responsive-label'];
+    return ['alt', 'responsive-label', 'active-tab'];
   }
 
   constructor() {
@@ -64,6 +64,15 @@ export class VlTabs extends vlElement(HTMLElement) {
     }
   }
 
+  /**
+   * Wacht tot de tab initialisatie klaar is.
+   *
+   * @return {Promise}
+   */
+  async ready() {
+    return awaitUntil(() => this._dressed != undefined);
+  }
+
   get __tabs() {
     return this.shadowRoot.getElementById('tabs');
   }
@@ -84,7 +93,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tabPane) => {
       this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
+        <li is="vl-tab" data-vl-href="#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
           ${(tabPane.title)}
         </li>
       `));
@@ -115,8 +124,14 @@ export class VlTabs extends vlElement(HTMLElement) {
     this.__tabs.setAttribute('data-vl-tabs-responsive-label', value);
     this.__responsiveLabel.innerHTML = value;
   }
+
+  async _activeTabChangedCallback(oldValue, newValue) {
+    await this.ready();
+    const tab = [...this.__tabList.children].find((tab) => tab.id == newValue);
+    if (tab) {
+      tab.activate();
+    }
+  }
 }
 
-awaitUntil(() => window.vl && window.vl.tabs).then(() => {
-  define(VlTabs.is, VlTabs);
-});
+awaitUntil(() => window.vl && window.vl.tabs).then(() => define(VlTabs.is, VlTabs));

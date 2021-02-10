@@ -7,6 +7,10 @@ class VlTab extends VlElement {
     await link.click();
   }
 
+  async isActive() {
+    return this.hasClass('vl-tab--active');
+  }
+
   async _getLink() {
     return this.findElement(By.css('a'));
   }

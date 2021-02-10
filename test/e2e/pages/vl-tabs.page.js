@@ -10,6 +10,10 @@ class VlTabsPage extends Page {
     return this._getTabs('#tabs-alt');
   }
 
+  async getActiveTabTabs() {
+    return this._getTabs('#tabs-active-tab');
+  }
+
   async load() {
     await super.load(Config.baseUrl + '/demo/vl-tabs.html');
   }

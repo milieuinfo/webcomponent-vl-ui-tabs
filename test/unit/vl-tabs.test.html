@@ -33,6 +33,10 @@
     suite('vl-tabs', () => {
       const should = chai.should();
       const sandbox = sinon.createSandbox();
+
+      teardown(() => {
+        sandbox.restore();
+      });
     
       test('alternative tabs versie heeft juiste klasse', () => {
         const tabs = fixture('vl-tabs-fixture');
@@ -50,7 +54,7 @@
         assert.lengthOf(tabs, tabPanes.length);
 
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
-          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}-tab`);
+          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
           assert.equal(tab.getAttribute('data-vl-href'), `#${tabPane.getAttribute('data-vl-id')}`);
@@ -78,6 +82,13 @@
         const element = fixture('vl-tabs-fixture');
         assert(vl.tabs.dress.calledWith(element.shadowRoot));
         assert.isTrue(element.hasAttribute(VlTabs._dressedAttributeName));
+      });
+
+      test('na de dress functie zal de ready promise resolved worden', (done) => {
+        sandbox.spy(vl.tabs, 'dress');
+        const element = fixture('vl-tabs-fixture');
+        element.ready().then(() => done());
+        assert(vl.tabs.dress.called);
       });
     });
   </script>

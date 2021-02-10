@@ -38,7 +38,7 @@ class VlTabs extends VlElement {
 
   async _getTabElements() {
     const list = await this._getTabListElement();
-    return list.findElements(By.css('.vl-tab'));
+    return list.findElements(By.css('[is="vl-tab"]'));
   }
 }
 

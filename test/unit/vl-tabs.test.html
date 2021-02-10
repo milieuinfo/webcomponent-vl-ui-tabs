@@ -131,16 +131,11 @@
         const element = fixture('vl-tabs-fixture');
         assert.lengthOf(getTabArray(), 3);
         assert.lengthOf(getTabSectionArray(), 3);
-        element.querySelector('[data-vl-id="trein"]').parentNode.removeChild(element.querySelector('[data-vl-id="trein"]'));
+        element.querySelector('[data-vl-id="trein"]').remove();
         setTimeout(() => {
           assert.lengthOf(getTabArray(), 2);
           assert.lengthOf(getTabSectionArray(), 2);
-          element.querySelector('[data-vl-id="fiets"]').parentNode.removeChild(element.querySelector('[data-vl-id="fiets"]'));
-          setTimeout(() => {
-            assert.lengthOf(getTabArray(), 1);
-            assert.lengthOf(getTabSectionArray(), 1);
-            done();
-          });
+          done();
         });
       });
     });

@@ -120,6 +120,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   _addTabSection({id, index}) {
+    this.__tabPanes[index].setAttribute('slot', `${id}-slot`);
     const element = this.__getTabSectionTemplate({id});
     if (index && index >= 0) {
       this.__tabs.insertBefore(element, this.__tabs.children[++index]);
@@ -134,10 +135,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   _renderSections() {
-    this.__tabPanes.forEach((tabPane) => {
-      tabPane.setAttribute('slot', tabPane.id + '-slot');
-      this._addTabSection({id: tabPane.id});
-    });
+    this.__tabPanes.forEach((tabPane, index) => this._addTabSection({id: tabPane.id, index: index}));
   }
 
   _altChangedCallback(oldValue, newValue) {

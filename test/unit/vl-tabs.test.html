@@ -123,6 +123,26 @@
           });
         });
       });
+
+      test('er kunnen dynamisch tabs verwijderd worden', (done) => {
+        const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
+        const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
+
+        const element = fixture('vl-tabs-fixture');
+        assert.lengthOf(getTabArray(), 3);
+        assert.lengthOf(getTabSectionArray(), 3);
+        element.removeChild(element.querySelector('#trein'));
+        setTimeout(() => {
+          assert.lengthOf(getTabArray(), 2);
+          assert.lengthOf(getTabSectionArray(), 2);
+          element.removeChild(element.querySelector('#fiets'));
+          setTimeout(() => {
+            assert.lengthOf(getTabArray(), 1);
+            assert.lengthOf(getTabSectionArray(), 1);
+            done();
+          });
+        });
+      });
     });
   </script>
 </body>

@@ -96,6 +96,53 @@
         element.ready().then(() => done());
         assert(vl.tabs.dress.called);
       });
+
+      test('er kunnen dynamisch tabs toegevoegd worden', (done) => {
+        const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
+        const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
+
+        const element = fixture('vl-tabs-empty-fixture');
+        assert.lengthOf(getTabArray(), 0);
+        assert.lengthOf(getTabSectionArray(), 0);
+        element.insertAdjacentHTML('afterbegin', `<vl-tabs-pane data-vl-id="1" data-vl-title="1">1 content</vl-tabs-pane>`);
+        setTimeout(() => {
+          assert.lengthOf(getTabArray(), 1);
+          assert.lengthOf(getTabSectionArray(), 1);
+          element.insertAdjacentHTML('beforeend', `<vl-tabs-pane data-vl-id="3" data-vl-title="3">3 content</vl-tabs-pane>`);
+          setTimeout(() => {
+            assert.lengthOf(getTabArray(), 2);
+            assert.lengthOf(getTabSectionArray(), 2);
+            element.__tabPanes[0].insertAdjacentHTML('afterend', `<vl-tabs-pane data-vl-id="2" data-vl-title="2">2 content</vl-tabs-pane>`);
+            setTimeout(() => {
+              assert.lengthOf(getTabArray(), 3);
+              assert.lengthOf(getTabSectionArray(), 3);
+              assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3']);
+              assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content', '2 content', '3 content']);
+              done();
+            });
+          });
+        });
+      });
+
+      test('er kunnen dynamisch tabs verwijderd worden', (done) => {
+        const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
+        const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
+
+        const element = fixture('vl-tabs-fixture');
+        assert.lengthOf(getTabArray(), 3);
+        assert.lengthOf(getTabSectionArray(), 3);
+        element.querySelector('[data-vl-id="trein"]').parentNode.removeChild(element.querySelector('[data-vl-id="trein"]'));
+        setTimeout(() => {
+          assert.lengthOf(getTabArray(), 2);
+          assert.lengthOf(getTabSectionArray(), 2);
+          element.querySelector('[data-vl-id="fiets"]').parentNode.removeChild(element.querySelector('[data-vl-id="fiets"]'));
+          setTimeout(() => {
+            assert.lengthOf(getTabArray(), 1);
+            assert.lengthOf(getTabSectionArray(), 1);
+            done();
+          });
+        });
+      });
     });
   </script>
 </body>

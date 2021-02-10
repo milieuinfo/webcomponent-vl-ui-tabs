@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <script type="module" src="../../src/vl-tabs-all.js"></script>
+</head>
+
+<body>
+  <test-fixture id="vl-tab-section-fixture">
+    <template>
+      <section id="tab-section-id" is="vl-tab-section"></section>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('vl-tab-section', () => {
+      test('heeft de juiste classes', () => {
+        const tabSection = fixture('vl-tab-section-fixture');
+        assert.isTrue(tabSection.classList.contains('vl-col--1-1'));
+        assert.isTrue(tabSection.classList.contains('vl-tab__pane'));
+      });
+
+      test('heeft de juiste attributen', () => {
+        const tabSection = fixture('vl-tab-section-fixture');
+        assert.isTrue(tabSection.hasAttribute('data-vl-tab-pane'));
+        assert.equal(tabSection.getAttribute('tabindex'), 0);
+        assert.equal(tabSection.getAttribute('role'), 'tabpanel');
+        assert.equal(tabSection.getAttribute('hidden'), 'hidden');
+        assert.equal(tabSection.getAttribute('aria-labelledby'), `${tabSection.id}-tab`);
+      });
+    });
+  </script>
+</body>
+
+</html>

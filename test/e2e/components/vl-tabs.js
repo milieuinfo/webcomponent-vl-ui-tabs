@@ -33,7 +33,7 @@ class VlTabs extends VlElement {
   }
 
   async _getTabListElement() {
-    return this.shadowRoot.findElement(By.css('#tabList'));
+    return this.shadowRoot.findElement(By.css('#tab-list'));
   }
 
   async _getTabElements() {

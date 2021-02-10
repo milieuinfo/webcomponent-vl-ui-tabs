@@ -119,8 +119,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     }
   }
 
-  _removeTab({id, title}) {
-    const element = this.__getTabTemplate({id, title});
+  _removeTab({id}) {
+    const element = this.__tabList.querySelector(`[data-vl-id="${id}"]`);
     this.__tabList.removeChild(element);
   }
 
@@ -135,7 +135,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   _removeTabSection({id}) {
-    const element = this.__getTabSectionTemplate({id});
+    const element = this.__tabs.querySelector(`#${id}-pane`);
     this.__tabs.removeChild(element);
   }
 

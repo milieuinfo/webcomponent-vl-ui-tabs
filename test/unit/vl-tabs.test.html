@@ -53,7 +53,7 @@
           const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}-tab`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
-          assert.equal(tab.getAttribute('data-vl-href'), `${window.location.pathname}#${tabPane.getAttribute('data-vl-id')}`);
+          assert.equal(tab.getAttribute('data-vl-href'), `#${tabPane.getAttribute('data-vl-id')}`);
           assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
       });

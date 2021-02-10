@@ -83,9 +83,8 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderTabs() {
     this.__tabList.innerHTML = '';
     [...this.__tabPanes].forEach((tabPane) => {
-      const pathname = window.location.pathname;
       this.__tabList.appendChild(this._template(`
-        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
+        <li is="vl-tab" data-vl-href="#${(tabPane.id)}" data-vl-id="${(tabPane.id)}-tab">
           ${(tabPane.title)}
         </li>
       `));

@@ -35,7 +35,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
     return this.getAttribute('id');
   }
 
-  get __tabLinkElement() {
+  get __linkElement() {
     return this.querySelector('.vl-tab__link');
   }
 
@@ -47,7 +47,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
    * Activeer de tab.
    */
   activate() {
-    this.__tabLinkElement.click();
+    this.__linkElement.click();
   }
 
   _processClasses() {
@@ -61,12 +61,12 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   _hrefChangedCallback(oldValue, newValue) {
-    this.__tabLinkElement.setAttribute('href', newValue);
-    this.__tabLinkElement.setAttribute('aria-controls', `${newValue}-pane`);
+    this.__linkElement.setAttribute('href', newValue);
+    this.__linkElement.setAttribute('aria-controls', `${newValue}-pane`);
   }
 
   _idChangedCallback(oldValue, newValue) {
-    this.__tabLinkElement.id = newValue;
+    this.__linkElement.id = newValue;
   }
 }
 

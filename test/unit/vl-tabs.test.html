@@ -33,6 +33,10 @@
     suite('vl-tabs', () => {
       const should = chai.should();
       const sandbox = sinon.createSandbox();
+
+      teardown(() => {
+        sandbox.restore();
+      });
     
       test('alternative tabs versie heeft juiste klasse', () => {
         const tabs = fixture('vl-tabs-fixture');
@@ -78,6 +82,13 @@
         const element = fixture('vl-tabs-fixture');
         assert(vl.tabs.dress.calledWith(element.shadowRoot));
         assert.isTrue(element.hasAttribute(VlTabs._dressedAttributeName));
+      });
+
+      test('na de dress functie zal de ready promise resolved worden', (done) => {
+        sandbox.spy(vl.tabs, 'dress');
+        const element = fixture('vl-tabs-fixture');
+        element.ready().then(() => done());
+        assert(vl.tabs.dress.called);
       });
     });
   </script>

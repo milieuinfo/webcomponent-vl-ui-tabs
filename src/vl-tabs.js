@@ -119,9 +119,11 @@ export class VlTabs extends vlElement(HTMLElement) {
     }
   }
 
-  _removeTab({id}) {
+  _removeTab(id) {
     const element = this.__tabList.querySelector(`[data-vl-id="${id}"]`);
-    this.__tabList.removeChild(element);
+    if (element) {
+      this.__tabList.removeChild(element);
+    }
   }
 
   _addTabSection({id, index}) {
@@ -134,9 +136,11 @@ export class VlTabs extends vlElement(HTMLElement) {
     }
   }
 
-  _removeTabSection({id}) {
+  _removeTabSection(id) {
     const element = this.__tabs.querySelector(`#${id}-pane`);
-    this.__tabs.removeChild(element);
+    if (element) {
+      this.__tabs.removeChild(element);
+    }
   }
 
   _renderTabs() {
@@ -186,8 +190,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     });
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToDelete.forEach((tabPane) => {
-      this._removeTab({id: tabPane.id, title: tabPane.title});
-      this._removeTabSection({id: tabPane.id});
+      this._removeTab(tabPane.id);
+      this._removeTabSection(tabPane.id);
       this.__dress(true);
     });
   }

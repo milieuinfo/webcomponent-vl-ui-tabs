@@ -123,6 +123,21 @@
           });
         });
       });
+
+      test('er kunnen dynamisch tabs verwijderd worden', (done) => {
+        const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
+        const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
+
+        const element = fixture('vl-tabs-fixture');
+        assert.lengthOf(getTabArray(), 3);
+        assert.lengthOf(getTabSectionArray(), 3);
+        element.querySelector('[data-vl-id="trein"]').remove();
+        setTimeout(() => {
+          assert.lengthOf(getTabArray(), 2);
+          assert.lengthOf(getTabSectionArray(), 2);
+          done();
+        });
+      });
     });
   </script>
 </body>

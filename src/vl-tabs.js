@@ -169,7 +169,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   async _activeTabChangedCallback(oldValue, newValue) {
     await this.ready();
     const tab = [...this.__tabList.children].find((tab) => tab.id == newValue);
-    if (tab) {
+    if (tab && !tab.isActive) {
       tab.activate();
     }
   }

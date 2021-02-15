@@ -1,12 +1,12 @@
 import {awaitUntil, define, vlElement} from 'vl-ui-core';
-import {VlTabPane} from '../dist/vl-tab-pane.src.js';
+import {VlTabsPane} from '../dist/vl-tab-pane.src.js';
 import '../dist/vl-tab.src.js';
 import '../lib/tabs.js';
 
 /**
  * VlTabs
  * @class
- * @classdesc Use tab navigation to break related information into smaller chuncks of content. When working with tabs, some content is hidden. Therefore it's important to label the tabs wisely, allowing the user to know exactly what to expect in a tab. On mobile, tab navigation is transformed into a dropdown menu.
+ * @classdesc Gebruik de vl-tabs navigatie om veel maar gerelateerde informatie in kleinere stukken te verdelen. Wanneer er met tabs gewerkt wordt, zal een deel van de informatie verborgen worden. Het is daardoor belangrijk om de gebruiker hier attent op te maken en duidelijk over te brengen welke informatie in een tab zichtbaar zal zijn. Op mobiele toestellen zal de tab navigatie gevisualiseerd worden via een dropdown menu.
  *
  * @extends HTMLElement
  * @mixes vlElement
@@ -35,8 +35,8 @@ export class VlTabs extends vlElement(HTMLElement) {
 
     </style>
     <div id="tabs" data-vl-tabs data-vl-tabs-responsive-label="Navigatie">
-      <div id="tabsWrapper" class="vl-tabs__wrapper">
-        <ul id="tabList" class="vl-tabs" data-vl-tabs-list role="tablist"></ul>  
+      <div id="tabs-wrapper" class="vl-tabs__wrapper">
+        <ul id="tab-list" class="vl-tabs" data-vl-tabs-list role="tablist"></ul>  
         <button type="button" data-vl-tabs-toggle aria-expanded="false" class="vl-tabs__toggle" data-vl-close="false">
           <span id="data-vl-tabs-responsive-label">Navigatie</span>  
         </button>
@@ -47,62 +47,12 @@ export class VlTabs extends vlElement(HTMLElement) {
   connectedCallback() {
     this._renderTabs();
     this._renderSections();
-    this.__registerActiveTabListeners();
     this.__dress();
-    this._observer = this.__observeChildElements((mutation) => {
-      mutation.forEach((m) => {
-        [...m.addedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
-          this.__addObservedTabs(node);
-        });
-        [...m.removedNodes].filter((node) => node.tagName === 'VL-TABS-PANE').forEach((node) => {
-          this.__removeObservedTabs(node);
-        });
-      });
-    });
+    this._observer = this.__observeTabPanes((mutations) => this.__processTabPane(mutations));
   }
 
   disconnectedCallback() {
     this._observer.disconnect();
-  }
-
-  __observeChildElements(callback) {
-    const observer = new MutationObserver(callback);
-    observer.observe(this,
-        {childList: true, attributes: false, subtree: false});
-    return observer;
-  }
-
-  __addObservedTabs(node) {
-    // get location of tab
-    const i = [...this.__tabPanes]
-        .map((tabPane) => tabPane.getAttribute('data-vl-id'))
-        .indexOf(node.getAttribute('data-vl-id'));
-
-    const tabPaneElement = this.__tabSectionElement(this.__tabPanes[i]);
-    const listElement = this.__tabListElement(this.__tabPanes[i]);
-    // add event listener to new tab for active-tab change event
-    // this.__tabEventListener(tabPaneElement);
-
-    if (i === this.__tabPanes.length - 1) {
-      this.__tabList.appendChild(listElement);
-      this.__tabs.appendChild(tabPaneElement);
-    } else {
-      // i = location where new tab needs to be, where currently a tab is.
-      this.__tabList.insertBefore(listElement,
-          this.__tabList.children[i]);
-      // i+1 because of tabsWrapper
-      this.__tabs.insertBefore(tabPaneElement,
-          this.__tabs.children[i+1]);
-    }
-    vl.tabs.dress(this.shadowRoot);
-  }
-
-  __removeObservedTabs(node) {
-    const listElement = this._shadow.querySelector('[data-vl-id="'+node.id+'"');
-    const tabPaneElement = this._shadow.querySelector('#'+node.id+'-pane');
-    this.__tabList.removeChild(listElement);
-    this.__tabs.removeChild(tabPaneElement);
-    vl.tabs.dress(this.shadowRoot);
   }
 
   get _dressed() {
@@ -113,26 +63,20 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'data-vl-tabs-dressed';
   }
 
-  __dress() {
-    if (!this._dressed) {
+  __dress(forced) {
+    if (!this._dressed || forced) {
       vl.tabs.dress(this.shadowRoot);
-      this.setAttribute(VlTabs._dressedAttributeName, 'true');
+      this.setAttribute(VlTabs._dressedAttributeName, '');
     }
   }
 
+  /**
+   * Wacht tot de tab initialisatie klaar is.
+   *
+   * @return {Promise}
+   */
   async ready() {
-    await awaitUntil(() => this._dressed === true);
-  }
-
-  async __updateActiveTab(activeTab) {
-    await this.ready();
-    this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
-      // TODO !tb.active is nodig om loop te voorkomen door
-      //  active-tab te wijzigen bij click in __tabEventListener.
-      if (tb.id === activeTab && !tb.active) {
-        tb.link.click();
-      }
-    });
+    return awaitUntil(() => this._dressed != undefined);
   }
 
   get __tabs() {
@@ -140,7 +84,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get __tabList() {
-    return this.shadowRoot.getElementById('tabList');
+    return this.shadowRoot.getElementById('tab-list');
   }
 
   get __responsiveLabel() {
@@ -148,38 +92,65 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get __tabPanes() {
-    return this.querySelectorAll(VlTabPane.is);
+    return [...this.querySelectorAll(VlTabsPane.is)];
+  }
+
+  __getTabTemplate({id, title}) {
+    return this._template(`
+      <li is="vl-tab" data-vl-href="#${id}" data-vl-id="${id}">
+        ${(title)}
+      </li>
+    `);
+  }
+
+  __getTabSectionTemplate({id}) {
+    return this._template(`
+      <section id="${id}-pane" is="vl-tab-section">
+        <slot name="${id}-slot"></slot>
+      </section>
+    `);
+  };
+
+  _addTab({id, title, index}) {
+    const element = this.__getTabTemplate({id, title});
+    if (index && index >= 0) {
+      this.__tabList.insertBefore(element, this.__tabList.children[index]);
+    } else {
+      this.__tabList.appendChild(element);
+    }
+  }
+
+  _removeTab(id) {
+    const element = this.__tabList.querySelector(`[data-vl-id="${id}"]`);
+    if (element) {
+      this.__tabList.removeChild(element);
+    }
+  }
+
+  _addTabSection({id, index}) {
+    this.__tabPanes[index].setAttribute('slot', `${id}-slot`);
+    const element = this.__getTabSectionTemplate({id});
+    if (index && index >= 0) {
+      this.__tabs.insertBefore(element, this.__tabs.children[++index]);
+    } else {
+      this.__tabs.appendChild(element);
+    }
+  }
+
+  _removeTabSection(id) {
+    const element = this.__tabs.querySelector(`#${id}-pane`);
+    if (element) {
+      this.__tabs.removeChild(element);
+    }
   }
 
   _renderTabs() {
     this.__tabList.innerHTML = '';
-    [...this.__tabPanes].forEach((tabPane) => {
-      this.__tabList.appendChild(this.__tabListElement(tabPane));
-    });
+    this.__tabPanes.forEach((tabPane) => this._addTab({id: tabPane.id, title: tabPane.title}));
   }
 
   _renderSections() {
-    [...this.__tabPanes].forEach((tabPane) => {
-      this.__tabs.appendChild(this.__tabSectionElement(tabPane));
-    });
-  }
-
-  __tabListElement(tabPane) {
-    const pathname = window.location.pathname;
-    return this._template(`
-        <li is="vl-tab" data-vl-href="${pathname}#${(tabPane.id)}" data-vl-id="${(tabPane.id)}">
-          ${(tabPane.title)}
-        </li>
-      `);
-  }
-
-  __tabSectionElement(tabPane) {
-    tabPane.setAttribute('slot', tabPane.id + '-slot');
-    return this._template(`
-        <section id="${(tabPane.id)}-pane" is="vl-tab-section" aria-labelledby="${(tabPane.id)}">
-          <slot name="${(tabPane.id)}-slot"></slot>
-        </section>
-      `);
+    this.__tabPanes.forEach((tabPane, index) => this._addTabSection({id: tabPane.id, index: index}));
   }
 
   _altChangedCallback(oldValue, newValue) {
@@ -196,32 +167,36 @@ export class VlTabs extends vlElement(HTMLElement) {
     this.__responsiveLabel.innerHTML = value;
   }
 
-  _activeTabChangedCallback(oldValue, newValue) {
-    this.__updateActiveTab(newValue);
+  async _activeTabChangedCallback(oldValue, newValue) {
+    await this.ready();
+    const tab = [...this.__tabList.children].find((tab) => tab.id == newValue);
+    if (tab && !tab.isActive) {
+      tab.activate();
+    }
   }
 
-  __registerActiveTabListeners() {
-    this.shadowRoot.querySelectorAll('[is="vl-tab"]').forEach((tb) => {
-      this.__tabEventListener(tb);
+  __observeTabPanes(callback) {
+    const observer = new MutationObserver(callback);
+    observer.observe(this, {childList: true});
+    return observer;
+  }
+
+  __processTabPane(mutations) {
+    const tabPanesToAdd = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node instanceof VlTabsPane);
+    tabPanesToAdd.forEach((tabPane) => {
+      const index = this.__tabPanes.indexOf(tabPane);
+      this._addTab({id: tabPane.id, title: tabPane.title, index: index});
+      this._addTabSection({id: tabPane.id, index: index});
+      this.__dress(true);
     });
-  }
-
-  __tabEventListener(tb) {
-    tb.link.addEventListener('click', () => {
-      // TODO moet deze check hier? Indien deze check nodig is, is de setAttribute dat ook.
-      //  Indien die niet mee verandert en de afnemer houdt geen rekening met deze change event,
-      //  dan zal de change event niet uitgestuurd worden als er terug op de initiële tab geklikt wordt.
-      if (this.getAttribute('data-vl-active-tab') !== tb.link.id) {
-        this.dispatchEvent(new CustomEvent('change',
-            {detail: {activeTab: tb.id}, bubbles: true, composed: true}));
-        // TODO dit is dan two way binding, wat niet meer echt ok is dacht ik?
-        this.setAttribute('data-vl-active-tab', tb.id);
-      }
+    const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
+    tabPanesToDelete.forEach((tabPane) => {
+      this._removeTab(tabPane.id);
+      this._removeTabSection(tabPane.id);
+      this.__dress(true);
     });
   }
 }
 
-awaitUntil(() => window.vl && window.vl.tabs).then(() => {
-  define(VlTabs.is, VlTabs);
-});
+awaitUntil(() => window.vl && window.vl.tabs).then(() => define(VlTabs.is, VlTabs));
 

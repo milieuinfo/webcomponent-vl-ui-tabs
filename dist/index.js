@@ -1,3 +1,1 @@
-module.exports = {
-  VlTabs: require('../dist/vl-tabs.src.js').VlTabs,
-};
+export * from '../dist/vl-tabs.src.js';

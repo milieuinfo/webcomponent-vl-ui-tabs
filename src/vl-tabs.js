@@ -85,7 +85,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     const tabPaneElement = this.__tabPaneElement(this.__tabPanes[i]);
     const listElement = this.__tabListElement(this.__tabPanes[i]);
     // add event listener to new tab for active-tab change event
-    this.__tabEventListener(tabPaneElement);
+    this.__tabEventListener(listElement.querySelector('a'));
 
     if (i === this.__tabPanes.length - 1) {
       this.__tabList.appendChild(listElement);

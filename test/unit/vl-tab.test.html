@@ -41,6 +41,15 @@
         tab.__linkElement.addEventListener('click', () => done());
         tab.activate();
       });
+
+      test('kan de tab change detecteren', (done) => {
+        const tab = fixture('vl-tab-fixture');
+        tab.addEventListener('change', (e) => {
+          assert.equal(e.detail.activeTab, tab.getAttribute('data-vl-id'));
+          done();
+        });
+        tab.activate();
+      });
     });
   </script>
 </body>

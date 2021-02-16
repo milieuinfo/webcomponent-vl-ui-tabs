@@ -1,6 +1,19 @@
 import {define, vlElement} from 'vl-ui-core';
 
-export class VlTabPane extends vlElement(HTMLElement) {
+/**
+ * VlTabsPane
+ * @class
+ * @classdesc De vl-tabs-pane is een verzameling van de vl-tab en vl-tab-section en zal deze componenten automatisch genereren.
+ *
+ * @extends HTMLElement
+ * @mixes vlElement
+ *
+ * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/releases/latest|Release notes}
+ * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/issues|Issues}
+ * @see {@link https://webcomponenten.omgeving.vlaanderen.be/demo/vl-tabs.html|Demo}
+ *
+ */
+export class VlTabsPane extends vlElement(HTMLElement) {
   static get is() {
     return 'vl-tabs-pane';
   }
@@ -22,5 +35,5 @@ export class VlTabPane extends vlElement(HTMLElement) {
   }
 }
 
-define(VlTabPane.is, VlTabPane);
+define(VlTabsPane.is, VlTabsPane);
 

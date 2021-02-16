@@ -144,7 +144,7 @@
         element.addEventListener('change', (e) => {
           assert.equal(e.detail.activeTab, 'trein');
           done();
-        })
+        });
         element.shadowRoot.querySelector('[is="vl-tab"][data-vl-id="trein"]').activate();
       });
     });

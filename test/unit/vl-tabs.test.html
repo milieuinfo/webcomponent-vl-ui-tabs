@@ -138,6 +138,15 @@
           done();
         });
       });
+
+      test('active tab change event komt door tot parent', (done) => {
+        const element = fixture('vl-tabs-fixture');
+        element.addEventListener('change', (e) => {
+          assert.equal(e.detail.activeTab, 'trein');
+          done();
+        });
+        element.shadowRoot.querySelector('[is="vl-tab"][data-vl-id="trein"]').activate();
+      });
     });
   </script>
 </body>

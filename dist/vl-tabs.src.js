@@ -96,8 +96,9 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   __getTabTemplate({id, title}) {
+    const pathname = window.location.pathname;
     return this._template(`
-      <li is="vl-tab" data-vl-href="#${id}" data-vl-id="${id}">
+      <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
         ${(title)}
       </li>
     `);

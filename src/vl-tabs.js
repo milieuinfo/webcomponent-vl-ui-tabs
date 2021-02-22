@@ -1,5 +1,5 @@
 import {awaitUntil, define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
-import {VlTabsPane} from '/src/vl-tab-pane.js';
+import {VlTabsPane} from '/src/vl-tabs-pane.js';
 import '/src/vl-tab.js';
 import '/lib/tabs.js';
 
@@ -62,8 +62,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'data-vl-tabs-dressed';
   }
 
-  __dress(forced) {
+  async __dress(forced) {
     if (!this._dressed || forced) {
+      await customElements.whenDefined('vl-tab');
+      await customElements.whenDefined('vl-tab-section');
       vl.tabs.dress(this.shadowRoot);
       this.setAttribute(VlTabs._dressedAttributeName, '');
     }
@@ -193,9 +195,7 @@ export class VlTabs extends vlElement(HTMLElement) {
       this._removeTab(tabPane.id);
       this._removeTabSection(tabPane.id);
     });
-    // nodig voor safari versie 14.0.3, anders wordt click event handler
-    // niet aan dynamisch toegevoegde tab toegevoegd.
-    setTimeout(() => this.__dress(true), 0);
+    this.__dress();
   }
 }
 

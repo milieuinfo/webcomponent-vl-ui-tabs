@@ -1,5 +1,5 @@
 import {awaitUntil, define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
-import {VlTabsPane} from '/node_modules/vl-ui-tabs/dist/vl-tab-pane.js';
+import {VlTabsPane} from '/node_modules/vl-ui-tabs/dist/vl-tabs-pane.js';
 import '/node_modules/vl-ui-tabs/dist/vl-tab.js';
 import '/node_modules/vl-ui-tabs/lib/tabs.js';
 
@@ -62,8 +62,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'data-vl-tabs-dressed';
   }
 
-  __dress(forced) {
+  async __dress(forced) {
     if (!this._dressed || forced) {
+      await customElements.whenDefined('vl-tab');
+      await customElements.whenDefined('vl-tab-section');
       vl.tabs.dress(this.shadowRoot);
       this.setAttribute(VlTabs._dressedAttributeName, '');
     }
@@ -193,7 +195,7 @@ export class VlTabs extends vlElement(HTMLElement) {
       this._removeTab(tabPane.id);
       this._removeTabSection(tabPane.id);
     });
-    this.__dress(true);
+    this.__dress();
   }
 }
 

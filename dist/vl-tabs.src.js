@@ -194,7 +194,7 @@ export class VlTabs extends vlElement(HTMLElement) {
       this._removeTab(tabPane.id);
       this._removeTabSection(tabPane.id);
     });
-    setTimeout(() => this.__dress(true), 0);
+    this.__dress(true);
   }
 }
 

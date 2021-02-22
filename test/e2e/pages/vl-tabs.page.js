@@ -14,8 +14,8 @@ class VlTabsPage extends Page {
     return this._getTabs('#tabs-active-tab');
   }
 
-  async load() {
-    await super.load(Config.baseUrl + '/demo/vl-tabs.html');
+  async load(url) {
+    await super.load(url || Config.baseUrl + '/demo/vl-tabs.html');
   }
 
   async loadHash(hash) {

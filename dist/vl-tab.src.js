@@ -44,7 +44,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   }
 
   get isActive() {
-    this.classList.contains('vl-tab--active')
+    this.classList.contains('vl-tab--active');
   }
 
   /**
@@ -61,14 +61,13 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
   _processLinkElement() {
     const a = this.__linkElementTemplate.firstElementChild;
     a.appendChild(this.childNodes[0]);
-    a.addEventListener('click', () => this.__dispatchActiveTabChangedEvent())
+    a.addEventListener('click', () => this.__dispatchActiveTabChangedEvent());
     this.appendChild(a);
   }
 
   __dispatchActiveTabChangedEvent() {
     if (!this.isActive) {
-      this.dispatchEvent(new CustomEvent('change',
-          {detail: {activeTab: this.id}, bubbles: true, composed: true}));
+      this.dispatchEvent(new CustomEvent('change', {detail: {activeTab: this.id}, composed: true}));
     }
   }
 

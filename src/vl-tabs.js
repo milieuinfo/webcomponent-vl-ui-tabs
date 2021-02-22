@@ -193,7 +193,9 @@ export class VlTabs extends vlElement(HTMLElement) {
       this._removeTab(tabPane.id);
       this._removeTabSection(tabPane.id);
     });
-    this.__dress(true);
+    // nodig voor safari versie 14.0.3, anders wordt click event handler
+    // niet aan dynamisch toegevoegde tab toegevoegd.
+    setTimeout(() => this.__dress(true), 0);
   }
 }
 

@@ -188,14 +188,13 @@ export class VlTabs extends vlElement(HTMLElement) {
       const index = this.__tabPanes.indexOf(tabPane);
       this._addTab({id: tabPane.id, title: tabPane.title, index: index});
       this._addTabSection({id: tabPane.id, index: index});
-      this.__dress(true);
     });
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToDelete.forEach((tabPane) => {
       this._removeTab(tabPane.id);
       this._removeTabSection(tabPane.id);
-      this.__dress(true);
     });
+    setTimeout(() => this.__dress(true), 0);
   }
 }
 

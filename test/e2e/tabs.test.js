@@ -1,9 +1,11 @@
 const {assert, getDriver} = require('vl-ui-core').Test.Setup;
 const VlTabsPage = require('./pages/vl-tabs.page');
+const VlTabsBasePage = require('./pages/vl-tabs-base.page');
 const VlTabsActiveTabPage = require('./pages/vl-tabs-active-tab.page');
 
 describe('vl-tabs', async () => {
   let vlTabsPage;
+  let vlTabsBasePage;
   let vlTabsActiveTabPage;
   const content1 = 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.';
   const content2 = 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
@@ -12,6 +14,7 @@ describe('vl-tabs', async () => {
   beforeEach(() => {
     const driver = getDriver();
     vlTabsPage = new VlTabsPage(driver);
+    vlTabsBasePage = new VlTabsBasePage(driver);
     vlTabsActiveTabPage = new VlTabsActiveTabPage(driver);
     return vlTabsPage.load();
   });
@@ -26,27 +29,33 @@ describe('vl-tabs', async () => {
   });
 
   it('als gebruiker kan ik na het selecteren van een tab de tab specifieke content zien', async () => {
-    let tabs = await vlTabsPage.getTabs();
-    await assert.eventually.isFalse(tabs.hasContent());
+    const pages = [vlTabsPage, vlTabsBasePage];
+    for (let index = 0; index < pages.length; index++) {
+      const page = pages[index];
+      await page.load();
 
-    let tabElements = await tabs.getTabs();
-    await tabElements[0].click();
-    tabs = await vlTabsPage.getTabs();
-    await assert.eventually.isTrue(tabs.hasContent());
-    let tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), content1);
+      let tabs = await page.getTabs();
+      await assert.eventually.isFalse(tabs.hasContent());
 
-    tabElements = await tabs.getTabs();
-    await tabElements[1].click();
-    tabs = await vlTabsPage.getTabs();
-    tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), content2);
+      let tabElements = await tabs.getTabs();
+      await tabElements[0].click();
+      tabs = await page.getTabs();
+      await assert.eventually.isTrue(tabs.hasContent());
+      let tabContent = await tabs.getContentSlotElement();
+      await assert.eventually.equal(tabContent.getText(), content1);
 
-    tabElements = await tabs.getTabs();
-    await tabElements[2].click();
-    tabs = await vlTabsPage.getTabs();
-    tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), content3);
+      tabElements = await tabs.getTabs();
+      await tabElements[1].click();
+      tabs = await page.getTabs();
+      tabContent = await tabs.getContentSlotElement();
+      await assert.eventually.equal(tabContent.getText(), content2);
+
+      tabElements = await tabs.getTabs();
+      await tabElements[2].click();
+      tabs = await page.getTabs();
+      tabContent = await tabs.getContentSlotElement();
+      await assert.eventually.equal(tabContent.getText(), content3);
+    }
   });
 
   it('als gebruiker kan ik rechtstreeks naar een URL surfen van een tab en zal deze geactiveerd worden', async () => {

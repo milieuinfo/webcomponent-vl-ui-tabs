@@ -1,5 +1,5 @@
 import {awaitUntil, define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
-import {VlTabsPane} from '/src/vl-tab-pane.js';
+import {VlTabsPane} from '/src/vl-tabs-pane.js';
 import '/src/vl-tab.js';
 import '/lib/tabs.js';
 
@@ -62,8 +62,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     return 'data-vl-tabs-dressed';
   }
 
-  __dress(forced) {
+  async __dress(forced) {
     if (!this._dressed || forced) {
+      await customElements.whenDefined('vl-tab');
+      await customElements.whenDefined('vl-tab-section');
       vl.tabs.dress(this.shadowRoot);
       this.setAttribute(VlTabs._dressedAttributeName, '');
     }
@@ -95,8 +97,9 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   __getTabTemplate({id, title}) {
+    const pathname = window.location.pathname;
     return this._template(`
-      <li is="vl-tab" data-vl-href="#${id}" data-vl-id="${id}">
+      <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
         ${(title)}
       </li>
     `);
@@ -186,14 +189,13 @@ export class VlTabs extends vlElement(HTMLElement) {
       const index = this.__tabPanes.indexOf(tabPane);
       this._addTab({id: tabPane.id, title: tabPane.title, index: index});
       this._addTabSection({id: tabPane.id, index: index});
-      this.__dress(true);
     });
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToDelete.forEach((tabPane) => {
       this._removeTab(tabPane.id);
       this._removeTabSection(tabPane.id);
-      this.__dress(true);
     });
+    this.__dress();
   }
 }
 

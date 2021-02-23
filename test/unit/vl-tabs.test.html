@@ -63,7 +63,8 @@
           const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
-          assert.equal(tab.getAttribute('data-vl-href'), `#${tabPane.getAttribute('data-vl-id')}`);
+          const path = window.location.pathname;
+          assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
           assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
       });
@@ -83,18 +84,27 @@
         });
       });
 
-      test('de dress functie wordt aangeroepen', () => {
+      test('de dress functie wordt aangeroepen', (done) => {
         sandbox.spy(vl.tabs, 'dress');
         const element = fixture('vl-tabs-fixture');
-        assert(vl.tabs.dress.calledWith(element.shadowRoot));
-        assert.isTrue(element.hasAttribute(VlTabs._dressedAttributeName));
+        customElements.whenDefined('vl-tab').then(() => {
+          customElements.whenDefined('vl-tab-section').then(() => {
+            assert(vl.tabs.dress.calledWith(element.shadowRoot));
+            assert.isTrue(element.hasAttribute(VlTabs._dressedAttributeName));
+            done();
+          });
+        });
       });
 
       test('na de dress functie zal de ready promise resolved worden', (done) => {
         sandbox.spy(vl.tabs, 'dress');
         const element = fixture('vl-tabs-fixture');
-        element.ready().then(() => done());
-        assert(vl.tabs.dress.called);
+        customElements.whenDefined('vl-tab').then(() => {
+          customElements.whenDefined('vl-tab-section').then(() => {
+            element.ready().then(() => done());
+            assert(vl.tabs.dress.called);
+          });
+        });
       });
 
       test('er kunnen dynamisch tabs toegevoegd worden', (done) => {

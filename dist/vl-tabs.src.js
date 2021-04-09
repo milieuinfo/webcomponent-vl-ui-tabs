@@ -185,7 +185,7 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __updateHrefs(value) {
     [...this.__tabList.children].forEach((tab) =>
-        tab.setAttribute('data-vl-href', `${value}#${tab.getAttribute('data-vl-id')}`));
+      tab.setAttribute('data-vl-href', `${value}#${tab.getAttribute('data-vl-id')}`));
   }
 
   __observeTabPanes(callback) {

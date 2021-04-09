@@ -1,7 +1,7 @@
 import {awaitUntil, define, vlElement} from '/node_modules/vl-ui-core/dist/vl-core.js';
 import {VlTabsPane} from '/node_modules/vl-ui-tabs/dist/vl-tabs-pane.js';
 import '/node_modules/vl-ui-tabs/dist/vl-tab.js';
-import '/node_modules/vl-ui-tabs/lib/tabs.js';
+import '/node_modules/@govflanders/vl-ui-tabs/dist/js/tabs.js';
 
 /**
  * VlTabs
@@ -25,7 +25,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt', 'responsive-label', 'active-tab'];
+    return ['alt', 'responsive-label', 'active-tab', 'href'];
   }
 
   constructor() {
@@ -97,7 +97,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   __getTabTemplate({id, title}) {
-    const pathname = window.location.pathname;
+    const pathname = this.getAttribute('data-vl-href') || window.location.pathname + window.location.search;
     return this._template(`
       <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
         ${(title)}
@@ -175,6 +175,16 @@ export class VlTabs extends vlElement(HTMLElement) {
     if (tab && !tab.isActive) {
       tab.activate();
     }
+  }
+
+  _hrefChangedCallback(oldValue, newValue) {
+    const href = newValue || window.location.pathname + window.location.search;
+    this.__updateHrefs(href);
+  }
+
+  __updateHrefs(value) {
+    [...this.__tabList.children].forEach((tab) =>
+        tab.setAttribute('data-vl-href', `${value}#${tab.getAttribute('data-vl-id')}`));
   }
 
   __observeTabPanes(callback) {

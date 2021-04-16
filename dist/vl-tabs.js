@@ -97,9 +97,8 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   __getTabTemplate({id, title}) {
-    const pathname = this.getAttribute('data-vl-href') || window.location.pathname + window.location.search;
     return this._template(`
-      <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
+      <li is="vl-tab" data-vl-href="${this.href}#${id}" data-vl-id="${id}">
         ${(title)}
       </li>
     `);
@@ -178,13 +177,16 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   _hrefChangedCallback(oldValue, newValue) {
-    const href = newValue || window.location.pathname + window.location.search;
-    this.__updateHrefs(href);
+    this.__updateHrefs();
   }
 
-  __updateHrefs(value) {
+  get href() {
+    return this.getAttribute('data-vl-href') || window.location.pathname + window.location.search;
+  }
+
+  __updateHrefs() {
     [...this.__tabList.children].forEach((tab) =>
-      tab.setAttribute('data-vl-href', `${value}#${tab.getAttribute('data-vl-id')}`));
+      tab.setAttribute('data-vl-href', `${this.href}#${tab.id}`));
   }
 
   __observeTabPanes(callback) {

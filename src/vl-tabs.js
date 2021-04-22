@@ -6,13 +6,17 @@ import '/node_modules/@govflanders/vl-ui-tabs/dist/js/tabs.js';
 /**
  * VlTabs
  * @class
- * @classdesc Gebruik de vl-tabs navigatie om veel maar gerelateerde informatie in kleinere stukken te verdelen. Wanneer er met tabs gewerkt wordt, zal een deel van de informatie verborgen worden. Het is daardoor belangrijk om de gebruiker hier attent op te maken en duidelijk over te brengen welke informatie in een tab zichtbaar zal zijn. Op mobiele toestellen zal de tab navigatie gevisualiseerd worden via een dropdown menu.
+ * @classdesc Gebruik de vl-tabs navigatie om veel maar gerelateerde informatie in kleinere stukken te verdelen. Wanneer er met tabs gewerkt wordt,
+ *   zal een deel van de informatie verborgen worden. Het is daardoor belangrijk om de gebruiker hier attent op te maken en duidelijk over te brengen
+ *   welke informatie in een tab zichtbaar zal zijn. Op mobiele toestellen zal de tab navigatie gevisualiseerd worden via een dropdown menu.
  *
  * @extends HTMLElement
  * @mixes vlElement
  *
- * @property {boolean} data-vl-alt - Attribuut om de alt variant van de tabs te tonen. Deze variant dient gebruikt te worden als subnavigatie onder de functional header.
- * @property {boolean} data-vl-responsive-label - Attribuut om de waarde in de tabs in responsive mode te veranderen. Enkel van toepassing wanneer geen tab is gekozen.
+ * @property {boolean} data-vl-alt - Attribuut om de alt variant van de tabs te tonen. Deze variant dient gebruikt te worden als subnavigatie onder
+ *   de functional header.
+ * @property {boolean} data-vl-responsive-label - Attribuut om de waarde in de tabs in responsive mode te veranderen. Enkel van toepassing wanneer
+ *   geen tab is gekozen.
  *
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/releases/latest|Release notes}
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/issues|Issues}
@@ -98,11 +102,18 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __getTabTemplate({id, title}) {
     const pathname = window.location.pathname;
-    return this._template(`
-      <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
-        ${(title)}
-      </li>
-    `);
+    if (title instanceof Node) {
+      const li = document.createElement('li', {is: 'vl-tab'});
+      li.setAttribute('data-vl-href', `${pathname}#${id}`);
+      li.setAttribute('data-vl-id', `${id}`);
+      li.appendChild(title);
+
+      const template = document.createElement('template');
+      template.appendChild(li);
+      return template.content;
+    } else {
+      return this._template(`<li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">${title}</li>`);
+    }
   }
 
   __getTabSectionTemplate({id}) {
@@ -115,6 +126,7 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _addTab({id, title, index}) {
     const element = this.__getTabTemplate({id, title});
+    console.log('Tab template:', element); // TODO stefanborghys: 22/04/2021 remove this console when fixed
     if (index && index >= 0) {
       this.__tabList.insertBefore(element, this.__tabList.children[index]);
     } else {

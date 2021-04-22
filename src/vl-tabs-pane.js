@@ -23,7 +23,11 @@ export class VlTabsPane extends vlElement(HTMLElement) {
   }
 
   constructor() {
-    super(`<slot name="title"></slot><slot></slot>`);
+    super(`<slot name="title" hidden></slot><slot></slot>`);
+  }
+
+  connectedCallback() {
+    this._processSlots();
   }
 
   get id() {
@@ -31,11 +35,24 @@ export class VlTabsPane extends vlElement(HTMLElement) {
   }
 
   get title() {
-    if(this.hasAttribute('data-vl-title')){
+    if (this._hasTitleAttribute) {
       return this.getAttribute('data-vl-title');
     } else {
-      const titleSlot = this.shadowRoot.querySelector('slot[name="title"]');
-      return titleSlot.assignedNodes()[0];
+      return this._titleSlot.assignedNodes()[0];
+    }
+  }
+
+  get _hasTitleAttribute() {
+    return this.hasAttribute('data-vl-title');
+  }
+
+  get _titleSlot() {
+    return this.shadowRoot.querySelector('slot[name="title"]');
+  }
+
+  _processSlots() {
+    if (this._hasTitleAttribute) {
+      this._titleSlot.remove();
     }
   }
 }

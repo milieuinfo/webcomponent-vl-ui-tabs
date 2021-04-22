@@ -23,7 +23,7 @@ export class VlTabsPane extends vlElement(HTMLElement) {
   }
 
   constructor() {
-    super(`<slot></slot>`);
+    super(`<slot name="title"></slot><slot></slot>`);
   }
 
   get id() {
@@ -31,7 +31,12 @@ export class VlTabsPane extends vlElement(HTMLElement) {
   }
 
   get title() {
-    return this.getAttribute('data-vl-title');
+    if(this.hasAttribute('data-vl-title')){
+      return this.getAttribute('data-vl-title');
+    } else {
+      const titleSlot = this.shadowRoot.querySelector('slot[name="title"]');
+      return titleSlot.assignedNodes()[0];
+    }
   }
 }
 

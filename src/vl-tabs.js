@@ -100,7 +100,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     const pathname = window.location.pathname;
     return this._template(`
       <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
-        ${(title)}
+        <slot name="${id}-title-slot">${(title)}</slot>
       </li>
     `);
   }

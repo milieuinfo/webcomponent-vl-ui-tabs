@@ -60,7 +60,7 @@ export class VlTab extends nativeVlElement(HTMLLIElement) {
 
   _processLinkElement() {
     const a = this.__linkElementTemplate.firstElementChild;
-    a.appendChild(this.childNodes[0]);
+    a.appendChild(this.querySelector('slot'));
     a.addEventListener('click', () => this.__dispatchActiveTabChangedEvent());
     this.appendChild(a);
   }

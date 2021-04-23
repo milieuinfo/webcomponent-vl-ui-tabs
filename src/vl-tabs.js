@@ -152,7 +152,7 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _moveTabPaneTitleSlot(tabPane) {
     const tabPaneTitleSlot = tabPane.querySelector(`[slot="${tabPane.id}-title-slot"]`);
-    if(tabPaneTitleSlot){
+    if (tabPaneTitleSlot) {
       const clonedTabPaneTitleSlot = tabPaneTitleSlot.cloneNode(true);
       this.appendChild(clonedTabPaneTitleSlot);
     }

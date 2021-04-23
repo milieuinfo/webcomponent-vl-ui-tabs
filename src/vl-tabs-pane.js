@@ -33,7 +33,6 @@ export class VlTabsPane extends vlElement(HTMLElement) {
   get title() {
     return this.getAttribute('data-vl-title');
   }
-
 }
 
 define(VlTabsPane.is, VlTabsPane);

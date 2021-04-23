@@ -56,7 +56,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get _dressed() {
-    return !!this.getAttribute(VlTabs._dressedAttributeName);
+    return this.hasAttribute(VlTabs._dressedAttributeName);
   }
 
   static get _dressedAttributeName() {
@@ -78,7 +78,7 @@ export class VlTabs extends vlElement(HTMLElement) {
    * @return {Promise}
    */
   async ready() {
-    return awaitUntil(() => this._dressed != undefined);
+    return awaitUntil(() => this._dressed);
   }
 
   get __tabs() {

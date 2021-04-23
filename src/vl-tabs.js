@@ -150,9 +150,20 @@ export class VlTabs extends vlElement(HTMLElement) {
     }
   }
 
+  _moveTabPaneTitleSlot(tabPane) {
+    const tabPaneTitleSlot = tabPane.querySelector(`[slot="${tabPane.id}-title-slot"]`);
+    if(tabPaneTitleSlot){
+      const clonedTabPaneTitleSlot = tabPaneTitleSlot.cloneNode(true);
+      this.appendChild(clonedTabPaneTitleSlot);
+    }
+  }
+
   _renderTabs() {
     this.__tabList.innerHTML = '';
-    this.__tabPanes.forEach((tabPane) => this._addTab({id: tabPane.id, title: tabPane.title}));
+    this.__tabPanes.forEach((tabPane) => {
+      this._moveTabPaneTitleSlot(tabPane);
+      this._addTab({id: tabPane.id, title: tabPane.title});
+    });
   }
 
   _renderSections() {
@@ -191,6 +202,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     const tabPanesToAdd = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToAdd.forEach((tabPane) => {
       const index = this.__tabPanes.indexOf(tabPane);
+      this._moveTabPaneTitleSlot(tabPane);
       this._addTab({id: tabPane.id, title: tabPane.title, index: index});
       this._addTabSection({id: tabPane.id, index: index});
     });

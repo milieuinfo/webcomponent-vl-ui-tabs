@@ -19,12 +19,12 @@
   </test-fixture>
 
   <test-fixture id="vl-tab-pane-met-title-slot-fixture">
-      <template>
-          <vl-tabs-pane data-vl-id="auto">
-              <span slot="title">Auto</span>
-              Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
-          </vl-tabs-pane>
-      </template>
+    <template>
+      <vl-tabs-pane data-vl-id="auto">
+        <span slot="auto-title-slot"><b>Auto</b></span>
+        Duis vitae magna vitae eros pretium porttitor id quis mauris. Sed imperdiet a diam in suscipit. Nunc consectetur urna nunc, eu tempor odio rutrum non. Sed in sem convallis, placerat nisi nec, placerat velit. In fringilla ex sed malesuada dictum. Sed congue neque orci, quis porta mi tempus ultrices. Vivamus gravida magna eu enim aliquet, sit amet tempus ante pellentesque. Donec eget hendrerit odio, eget aliquam felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vel maximus orci.
+      </vl-tabs-pane>
+    </template>
   </test-fixture>
 
   <script>
@@ -36,13 +36,9 @@
         });
       });
 
-      test('kan de title als slot opvragen', () => {
+      test('title null wanneer een title-slot wordt gebruikt', () => {
         const tabPane = fixture('vl-tab-pane-met-title-slot-fixture');
-
-        const title = tabPane.title;
-        assert.equal(title.tagName, 'SPAN');
-        assert.isTrue(title.hasAttribute('slot'));
-        assert.equal(title.innerHTML, 'Auto');
+        assert.isNull(tabPane.title);
       });
     });
   </script>

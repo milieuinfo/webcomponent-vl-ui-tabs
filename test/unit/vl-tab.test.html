@@ -12,21 +12,25 @@
 <body>
   <test-fixture id="vl-tab-fixture">
     <template>
-      <li is="vl-tab" data-vl-href="tab-href" data-vl-id="tab-id">
-        Tab tekst
-      </li>
+      <vl-tabs id="tabs">
+        <li is="vl-tab" data-vl-href="tab-href" data-vl-id="tab-id">
+          <slot>Tab tekst</slot>
+        </li>
+      </vl-tabs>
     </template>
   </test-fixture>
 
   <script>
     suite('vl-tab', () => {
       test('heeft de vl-tab class', () => {
-        const tab = fixture('vl-tab-fixture');
+        const tabs = fixture('vl-tab-fixture');
+        const tab = tabs.querySelector('[is="vl-tab"]');
         assert.isTrue(tab.classList.contains('vl-tab'));
       });
 
       test('het link element wordt correct gegenereerd', () => {
-        const tab = fixture('vl-tab-fixture');
+        const tabs = fixture('vl-tab-fixture');
+        const tab = tabs.querySelector('[is="vl-tab"]');
         const link = tab.querySelector('a');
         assert.isTrue(link.classList.contains('vl-tab__link'));
         assert.isTrue(link.hasAttribute('data-vl-tab'));
@@ -37,13 +41,15 @@
       });
 
       test('kan de tab activeren', (done) => {
-        const tab = fixture('vl-tab-fixture');
+        const tabs = fixture('vl-tab-fixture');
+        const tab = tabs.querySelector('[is="vl-tab"]');
         tab.__linkElement.addEventListener('click', () => done());
         tab.activate();
       });
 
       test('kan de tab change detecteren', (done) => {
-        const tab = fixture('vl-tab-fixture');
+        const tabs = fixture('vl-tab-fixture');
+        const tab = tabs.querySelector('[is="vl-tab"]');
         tab.addEventListener('change', (e) => {
           assert.equal(e.detail.activeTab, tab.getAttribute('data-vl-id'));
           done();

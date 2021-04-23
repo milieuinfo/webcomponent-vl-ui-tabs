@@ -102,18 +102,11 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __getTabTemplate({id, title}) {
     const pathname = window.location.pathname;
-    if (title instanceof Node) {
-      const li = document.createElement('li', {is: 'vl-tab'});
-      li.setAttribute('data-vl-href', `${pathname}#${id}`);
-      li.setAttribute('data-vl-id', `${id}`);
-      li.appendChild(title);
-
-      const template = document.createElement('template');
-      template.appendChild(li);
-      return template.content;
-    } else {
-      return this._template(`<li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">${title}</li>`);
-    }
+    return this._template(`
+      <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
+        <slot name="${id}-title-slot">${(title)}</slot>
+      </li>
+    `);
   }
 
   __getTabSectionTemplate({id}) {
@@ -126,7 +119,6 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _addTab({id, title, index}) {
     const element = this.__getTabTemplate({id, title});
-    console.log('Tab template:', element); // TODO stefanborghys: 22/04/2021 remove this console when fixed
     if (index && index >= 0) {
       this.__tabList.insertBefore(element, this.__tabList.children[index]);
     } else {

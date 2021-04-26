@@ -33,7 +33,6 @@ class VlTab extends VlElement {
     const slotElements = await this.getAssignedElements(slot);
     return slotElements.length > 0 ? slotElements[0] : null;
   }
-
 }
 
 module.exports = VlTab;

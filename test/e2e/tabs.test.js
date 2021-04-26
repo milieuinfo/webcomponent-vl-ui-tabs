@@ -10,7 +10,6 @@ describe('vl-tabs', async () => {
   const content1 = 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.';
   const content2 = 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const content3 = 'Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.';
-  const content4 = 'Duis vitae magna vitae eros pretium porttitor id quis mauris. Sed imperdiet a diam in suscipit. Nunc consectetur urna nunc, eu tempor odio rutrum non. Sed in sem convallis, placerat nisi nec, placerat velit. In fringilla ex sed malesuada dictum. Sed congue neque orci, quis porta mi tempus ultrices. Vivamus gravida magna eu enim aliquet, sit amet tempus ante pellentesque. Donec eget hendrerit odio, eget aliquam felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vel maximus orci.';
 
   beforeEach(() => {
     const driver = getDriver();

@@ -24,8 +24,9 @@
           Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
         </vl-tabs-pane>
         <vl-tabs-pane data-vl-id="auto">
-          <span slot="title">Auto</span>
-          Duis vitae magna vitae eros pretium porttitor id quis mauris. Sed imperdiet a diam in suscipit. Nunc consectetur urna nunc, eu tempor odio rutrum non. Sed in sem convallis, placerat nisi nec, placerat velit. In fringilla ex sed malesuada dictum. Sed congue neque orci, quis porta mi tempus ultrices. Vivamus gravida magna eu enim aliquet, sit amet tempus ante pellentesque. Donec eget hendrerit odio, eget aliquam felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vel maximus orci.         </vl-tabs-pane>
+          <span slot="auto-title-slot"><b>Auto</b></span>
+          Duis vitae magna vitae eros pretium porttitor id quis mauris. Sed imperdiet a diam in suscipit. Nunc consectetur urna nunc, eu tempor odio rutrum non. Sed in sem convallis, placerat nisi nec, placerat velit. In fringilla ex sed malesuada dictum. Sed congue neque orci, quis porta mi tempus ultrices. Vivamus gravida magna eu enim aliquet, sit amet tempus ante pellentesque. Donec eget hendrerit odio, eget aliquam felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vel maximus orci.
+        </vl-tabs-pane>
       </vl-tabs>
     </template>
   </test-fixture>
@@ -70,6 +71,17 @@
           assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
           assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
+
+        const autoTabId = 'auto';
+        const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${autoTabId}`);
+        const index = [...tabs].indexOf(tab);
+        const tabPane = tabPanes[index];
+        const path = window.location.pathname;
+        assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
+
+        const tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${tabPane.id}-title-slot']`);
+        const tabTitleSpan = tabTitleSlot.assignedNodes()[0];
+        assert.equal(tabTitleSpan.innerHTML, '<b>Auto</b>');
       });
 
       test('de tab sections worden correct gegenereerd', () => {
@@ -78,7 +90,7 @@
         const tabSections = element.__tabs.querySelectorAll('[is="vl-tab-section"]');
         assert.lengthOf(tabSections, tabPanes.length);
 
-        ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
+        ['trein', 'metro-tram-bus', 'fiets', 'auto'].forEach((val) => {
           const tabSection = [...tabSections].find((tabSection) => tabSection.id === `${val}-pane`);
           const index = [...tabSections].indexOf(tabSection);
           const tabPane = tabPanes[index];
@@ -129,9 +141,17 @@
             setTimeout(() => {
               assert.lengthOf(getTabArray(), 3);
               assert.lengthOf(getTabSectionArray(), 3);
-              assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3']);
-              assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content', '2 content', '3 content']);
-              done();
+              element.insertAdjacentHTML('beforeend', `<vl-tabs-pane data-vl-id="4"><span slot="4-title-slot">4</span>4 content</vl-tabs-pane>`);
+              setTimeout(() => {
+                assert.lengthOf(getTabArray(), 4);
+                assert.lengthOf(getTabSectionArray(), 4);
+                assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3', '4']);
+                getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText)
+                    .forEach((text) => console.log(text));
+                assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content',
+                  '2 content', '3 content', '4 content']);
+                done();
+              });
             });
           });
         });

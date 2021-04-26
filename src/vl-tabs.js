@@ -155,6 +155,7 @@ export class VlTabs extends vlElement(HTMLElement) {
     if (tabPaneTitleSlot) {
       const clonedTabPaneTitleSlot = tabPaneTitleSlot.cloneNode(true);
       this.appendChild(clonedTabPaneTitleSlot);
+      tabPaneTitleSlot.remove();
     }
   }
 

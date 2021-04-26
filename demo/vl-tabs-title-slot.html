@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>vl-tabs voorbeeld</title>
+  <script type="module" src="/node_modules/vl-ui-demo/dist/vl-demo-all.js"></script>
+  <script type="module" src="/node_modules/vl-ui-body/dist/vl-body.js"></script>
+  <script type="module" src="/node_modules/vl-ui-grid/dist/vl-grid.js"></script>
+
+  <script type="module" src="/src/vl-tabs-all.js"></script>
+  <base href="/base">
+
+  <link rel="stylesheet" type="text/css" href="/src/style.css">
+  <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-demo/dist/style.css">
+  <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-body/dist/style.css">
+  <link rel="stylesheet" type="text/css" href="/node_modules/vl-ui-grid/dist/style.css">
+</head>
+
+<body is="vl-body">
+<vl-demo-page data-vl-webcomponent="vl-tabs" data-vl-link="https://overheid.vlaanderen.be/webuniversum/v3/documentation/components/vl-ui-tabs">
+  <vl-demo data-vl-title="Tabs">
+    <vl-tabs id="tabs">
+      <vl-tabs-pane data-vl-id="auto">
+        <span slot="auto-title-slot"><b>Auto</b></span>
+        Duis vitae magna vitae eros pretium porttitor id quis mauris. Sed imperdiet a diam in suscipit. Nunc consectetur urna nunc, eu tempor odio rutrum non. Sed in sem convallis, placerat nisi nec, placerat velit. In fringilla ex sed malesuada dictum. Sed congue neque orci, quis porta mi tempus ultrices. Vivamus gravida magna eu enim aliquet, sit amet tempus ante pellentesque. Donec eget hendrerit odio, eget aliquam felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vel maximus orci.
+      </vl-tabs-pane>
+    </vl-tabs>
+  </vl-demo>
+</vl-demo-page>
+</body>
+</html>

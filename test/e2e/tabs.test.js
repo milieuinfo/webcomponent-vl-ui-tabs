@@ -58,12 +58,6 @@ describe('vl-tabs', async () => {
       tabs = await page.getTabs();
       tabContent = await tabs.getContentSlotElement();
       await assert.eventually.equal(tabContent.getText(), content3);
-
-      tabElements = await tabs.getTabs();
-      await tabElements[3].click();
-      tabs = await page.getTabs();
-      tabContent = await tabs.getContentSlotElement();
-      await assert.eventually.equal(tabContent.getText(), content4);
     }
   });
 
@@ -92,7 +86,6 @@ describe('vl-tabs', async () => {
     await assert.eventually.isFalse(tabElements[0].isActive());
     await assert.eventually.isFalse(tabElements[1].isActive());
     await assert.eventually.isFalse(tabElements[2].isActive());
-    await assert.eventually.isFalse(tabElements[3].isActive());
     await assert.eventually.isFalse(tabs.hasContent());
 
     await vlTabsActiveTabPage.load();
@@ -102,6 +95,5 @@ describe('vl-tabs', async () => {
     await assert.eventually.isFalse(tabElements[1].isActive());
     await assert.eventually.isTrue(tabElements[2].isActive());
     await assert.eventually.isTrue(tabs.hasContent());
-    await assert.eventually.isFalse(tabElements[3].isActive());
   });
 });

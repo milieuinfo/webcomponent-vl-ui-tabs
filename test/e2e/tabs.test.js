@@ -2,13 +2,11 @@ const {assert, getDriver} = require('vl-ui-core').Test.Setup;
 const VlTabsPage = require('./pages/vl-tabs.page');
 const VlTabsBasePage = require('./pages/vl-tabs-base.page');
 const VlTabsActiveTabPage = require('./pages/vl-tabs-active-tab.page');
-const VlTabsTitleSlotPage = require('./pages/vl-tabs-title-slot.page');
 
 describe('vl-tabs', async () => {
   let vlTabsPage;
   let vlTabsBasePage;
   let vlTabsActiveTabPage;
-  let vlTabsTitleSlotPage;
 
   const content1 = 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.';
   const content2 = 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
@@ -20,34 +18,30 @@ describe('vl-tabs', async () => {
     vlTabsPage = new VlTabsPage(driver);
     vlTabsBasePage = new VlTabsBasePage(driver);
     vlTabsActiveTabPage = new VlTabsActiveTabPage(driver);
-    vlTabsTitleSlotPage = new VlTabsTitleSlotPage(driver);
     return vlTabsPage.load();
   });
 
   it('als gebruiker kan ik de verschillende tabs bekijken', async () => {
     const tabs = await vlTabsPage.getTabs();
     const tabElements = await tabs.getTabs();
-    assert.lengthOf(tabElements, 4);
+    assert.lengthOf(tabElements, 3);
 
     await assert.eventually.equal(tabElements[0].getTitleText(), 'Trein');
     await assert.eventually.equal(tabElements[1].getTitleText(), 'Metro, tram en bus');
     await assert.eventually.equal(tabElements[2].getTitleText(), 'Fiets');
-    await assert.eventually.equal(tabElements[3].getTitleText(), 'Auto');
   });
 
   it('als gebruiker kan ik een tab met title slot en content bekijken', async () => {
-    const page = vlTabsTitleSlotPage;
-    await page.load();
-    let tabs = await page.getTabs();
+    let tabs = await vlTabsPage.getSlottedTabs();
     await assert.eventually.isFalse(tabs.hasContent());
 
     const tabElements = await tabs.getTabs();
-    const tab = tabElements[0];
-    await assert.eventually.equal(tab.getTitleText(), 'Auto');
+    await assert.eventually.equal(tabElements[0].getTitleText(), 'Auto');
+    await assert.eventually.equal(tabElements[1].getTitleText(), 'Vrachtwagen');
 
-    await tab.click();
+    await tabElements[1].click();
 
-    tabs = await page.getTabs();
+    tabs = await vlTabsPage.getSlottedTabs();
     await assert.eventually.isTrue(tabs.hasContent());
     const tabContent = await tabs.getContentSlotElement();
     await assert.eventually.equal(tabContent.getText(), content4);

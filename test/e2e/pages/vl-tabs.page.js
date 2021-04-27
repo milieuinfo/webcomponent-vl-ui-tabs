@@ -6,6 +6,10 @@ class VlTabsPage extends Page {
     return this._getTabs('#tabs');
   }
 
+  async getSlottedTabs() {
+    return this._getTabs('#tabs-slotted');
+  }
+
   async getAltTabs() {
     return this._getTabs('#tabs-alt');
   }

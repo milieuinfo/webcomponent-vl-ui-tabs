@@ -117,7 +117,10 @@ export class VlTabs extends vlElement(HTMLElement) {
     `);
   };
 
-  _addTab({id, title, index}) {
+  _addTab({tabPane, index}) {
+    this._moveTabPaneTitleSlot(tabPane);
+
+    const {id, title} = tabPane;
     const element = this.__getTabTemplate({id, title});
     if (index && index >= 0) {
       this.__tabList.insertBefore(element, this.__tabList.children[index]);
@@ -162,8 +165,8 @@ export class VlTabs extends vlElement(HTMLElement) {
   _renderTabs() {
     this.__tabList.innerHTML = '';
     this.__tabPanes.forEach((tabPane) => {
-      this._moveTabPaneTitleSlot(tabPane);
-      this._addTab({id: tabPane.id, title: tabPane.title});
+      // TODO stefanborghys: 27/04/2021
+      this._addTab({tabPane: tabPane});
     });
   }
 
@@ -203,8 +206,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     const tabPanesToAdd = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToAdd.forEach((tabPane) => {
       const index = this.__tabPanes.indexOf(tabPane);
-      this._moveTabPaneTitleSlot(tabPane);
-      this._addTab({id: tabPane.id, title: tabPane.title, index: index});
+      // TODO stefanborghys: 27/04/2021
+      this._addTab({tabPane: tabPane, index: index});
       this._addTabSection({id: tabPane.id, index: index});
     });
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);

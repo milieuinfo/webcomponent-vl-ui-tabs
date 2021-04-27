@@ -63,23 +63,20 @@
         const tabs = element.__tabList.querySelectorAll('[is="vl-tab"]');
         assert.lengthOf(tabs, tabPanes.length);
 
+        const path = window.location.pathname;
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
           const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
-          const path = window.location.pathname;
           assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
           assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
 
-        const autoTabId = 'auto';
-        const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${autoTabId}`);
-        const index = [...tabs].indexOf(tab);
-        const tabPane = tabPanes[index];
-        const path = window.location.pathname;
-        assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
+        const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === 'auto');
+        const autoTabsPane = element.querySelector(`[data-vl-id='auto']`);
+        assert.equal(tab.getAttribute('data-vl-href'), `${path}#${autoTabsPane.getAttribute('data-vl-id')}`);
 
-        const tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${tabPane.id}-title-slot']`);
+        const tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${autoTabsPane.id}-title-slot']`);
         const tabTitleSpan = tabTitleSlot.assignedNodes()[0];
         assert.equal(tabTitleSpan.innerHTML, '<b>Auto</b>');
       });
@@ -146,8 +143,6 @@
                 assert.lengthOf(getTabArray(), 4);
                 assert.lengthOf(getTabSectionArray(), 4);
                 assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3', '4']);
-                getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText)
-                    .forEach((text) => console.log(text));
                 assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content',
                   '2 content', '3 content', '4 content']);
                 done();
@@ -179,6 +174,24 @@
           done();
         });
         element.shadowRoot.querySelector('[is="vl-tab"][data-vl-id="trein"]').activate();
+      });
+
+      test('tabs pane title slot wijzigingen updaten de tab', async () => {
+        const element = fixture('vl-tabs-fixture');
+        await element.ready();
+
+        const autoTabsPane = element.querySelector(`[data-vl-id='auto']`);
+        let tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${autoTabsPane.id}-title-slot']`);
+        let tabTitleSpan = tabTitleSlot.assignedNodes()[0];
+        assert.equal(tabTitleSpan.innerHTML, '<b>Auto</b>');
+
+        autoTabsPane.insertAdjacentHTML('afterbegin', `<span slot="auto-title-slot"><i>Nieuwe Auto</i></span>`);
+
+        setTimeout(() => {
+          tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${autoTabsPane.id}-title-slot']`);
+          tabTitleSpan = tabTitleSlot.assignedNodes()[0];
+          assert.equal(tabTitleSpan.innerHTML, '<i>Nieuwe Auto</i>');
+        });
       });
     });
   </script>

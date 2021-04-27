@@ -2,20 +2,25 @@ const {assert, getDriver} = require('vl-ui-core').Test.Setup;
 const VlTabsPage = require('./pages/vl-tabs.page');
 const VlTabsBasePage = require('./pages/vl-tabs-base.page');
 const VlTabsActiveTabPage = require('./pages/vl-tabs-active-tab.page');
+const VlTabsTitleSlotPage = require('./pages/vl-tabs-title-slot.page');
 
 describe('vl-tabs', async () => {
   let vlTabsPage;
   let vlTabsBasePage;
   let vlTabsActiveTabPage;
+  let vlTabsTitleSlotPage;
+
   const content1 = 'Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.';
   const content2 = 'Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const content3 = 'Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.';
+  const content4 = 'Duis vitae magna vitae eros pretium porttitor id quis mauris. Sed imperdiet a diam in suscipit. Nunc consectetur urna nunc, eu tempor odio rutrum non. Sed in sem convallis, placerat nisi nec, placerat velit. In fringilla ex sed malesuada dictum. Sed congue neque orci, quis porta mi tempus ultrices. Vivamus gravida magna eu enim aliquet, sit amet tempus ante pellentesque. Donec eget hendrerit odio, eget aliquam felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vel maximus orci.';
 
   beforeEach(() => {
     const driver = getDriver();
     vlTabsPage = new VlTabsPage(driver);
     vlTabsBasePage = new VlTabsBasePage(driver);
     vlTabsActiveTabPage = new VlTabsActiveTabPage(driver);
+    vlTabsTitleSlotPage = new VlTabsTitleSlotPage(driver);
     return vlTabsPage.load();
   });
 
@@ -28,6 +33,24 @@ describe('vl-tabs', async () => {
     await assert.eventually.equal(tabElements[1].getTitleText(), 'Metro, tram en bus');
     await assert.eventually.equal(tabElements[2].getTitleText(), 'Fiets');
     await assert.eventually.equal(tabElements[3].getTitleText(), 'Auto');
+  });
+
+  it('als gebruiker kan ik een tab met title slot en content bekijken', async () => {
+    const page = vlTabsTitleSlotPage;
+    await page.load();
+    let tabs = await page.getTabs();
+    await assert.eventually.isFalse(tabs.hasContent());
+
+    const tabElements = await tabs.getTabs();
+    const tab = tabElements[0];
+    await assert.eventually.equal(tab.getTitleText(), 'Auto');
+
+    await tab.click();
+
+    tabs = await page.getTabs();
+    await assert.eventually.isTrue(tabs.hasContent());
+    const tabContent = await tabs.getContentSlotElement();
+    await assert.eventually.equal(tabContent.getText(), content4);
   });
 
   it('als gebruiker kan ik na het selecteren van een tab de tab specifieke content zien', async () => {

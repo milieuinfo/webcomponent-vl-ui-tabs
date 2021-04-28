@@ -211,28 +211,31 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __processTabPane(mutations) {
     const tabPanesToAdd = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node instanceof VlTabsPane);
-    tabPanesToAdd.forEach((tabPane) => {
-      const index = this.__tabPanes.indexOf(tabPane);
-      this._addTab({tabPane: tabPane, index: index});
-      this._addTabSection({id: tabPane.id, index: index});
-    });
+    tabPanesToAdd.forEach((tabPane) => this.__addTabAndSection(tabPane));
+
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
-    tabPanesToDelete.forEach((tabPane) => {
-      this._removeTab(tabPane.id);
-      this._removeTabSection(tabPane.id);
-    });
+    tabPanesToDelete.forEach((tabPane) => this.__removeTabAndSection(tabPane));
 
-    const tabPanesToUpdate = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node.parentNode instanceof VlTabsPane).map((node) => node.parentNode);
+    const tabPanesToUpdate = mutations.flatMap((mutation) => [...mutation.addedNodes])
+        .filter((node) => node.parentNode instanceof VlTabsPane)
+        .map((node) => node.parentNode);
     tabPanesToUpdate.forEach((tabPane) => {
-      const index = this.__tabPanes.indexOf(tabPane);
-      this._removeTab(tabPane.id);
-      this._addTab({tabPane: tabPane, index: index});
-
-      this._removeTabSection(tabPane.id);
-      this._addTabSection({id: tabPane.id, index: index});
+      this.__removeTabAndSection(tabPane);
+      this.__addTabAndSection(tabPane);
     });
 
     this.__dress();
+  }
+
+  __addTabAndSection(tabPane) {
+    const index = this.__tabPanes.indexOf(tabPane);
+    this._addTab({tabPane: tabPane, index: index});
+    this._addTabSection({id: tabPane.id, index: index});
+  }
+
+  __removeTabAndSection(tabPane) {
+    this._removeTab(tabPane.id);
+    this._removeTabSection(tabPane.id);
   }
 }
 

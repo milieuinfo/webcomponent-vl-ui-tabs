@@ -194,6 +194,40 @@
           done();
         });
       });
+
+      test('update href leidt tot nieuwe links', (done) => {
+        const element = fixture('vl-tabs-fixture');
+
+        const tabPanes = element.querySelectorAll('vl-tabs-pane');
+        const tabs = element.__tabList.querySelectorAll('[is="vl-tab"]');
+
+        ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
+          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
+          const index = [...tabs].indexOf(tab);
+          const tabPane = tabPanes[index];
+          const path = window.location.pathname;
+          const search = window.location.search;
+          assert.equal(tab.getAttribute('data-vl-href'), `${path}${search}#${tabPane.id}`);
+        });
+
+        const currentLocation = new URL(window.location.href);
+        const searchParams = currentLocation.searchParams;
+        searchParams.set('test', 'test');
+
+        element.setAttribute('data-vl-href', currentLocation.pathname + currentLocation.search);
+
+        setTimeout(() => {
+          ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
+            const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
+            const index = [...tabs].indexOf(tab);
+            const tabPane = tabPanes[index];
+            const path = window.location.pathname;
+            const search = '?test=test';
+            assert.equal(tab.getAttribute('data-vl-href'), `${path}${search}#${tabPane.id}`);
+          });
+          done();
+        });
+      });
     });
   </script>
 </body>

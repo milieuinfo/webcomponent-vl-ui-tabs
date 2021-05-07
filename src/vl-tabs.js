@@ -29,7 +29,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   static get _observedAttributes() {
-    return ['alt', 'responsive-label', 'active-tab'];
+    return ['alt', 'responsive-label', 'active-tab', 'href'];
   }
 
   constructor() {
@@ -59,7 +59,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   get _dressed() {
-    return !!this.getAttribute(VlTabs._dressedAttributeName);
+    return this.hasAttribute(VlTabs._dressedAttributeName);
   }
 
   static get _dressedAttributeName() {
@@ -81,7 +81,7 @@ export class VlTabs extends vlElement(HTMLElement) {
    * @return {Promise}
    */
   async ready() {
-    return awaitUntil(() => this._dressed != undefined);
+    return awaitUntil(() => this._dressed);
   }
 
   get __tabs() {
@@ -101,9 +101,8 @@ export class VlTabs extends vlElement(HTMLElement) {
   }
 
   __getTabTemplate({id, title}) {
-    const pathname = window.location.pathname;
     return this._template(`
-      <li is="vl-tab" data-vl-href="${pathname}#${id}" data-vl-id="${id}">
+      <li is="vl-tab" data-vl-href="${this.__href}#${id}" data-vl-id="${id}">
         <slot name="${id}-title-slot">${(title)}</slot>
       </li>
     `);
@@ -200,6 +199,19 @@ export class VlTabs extends vlElement(HTMLElement) {
     if (tab && !tab.isActive) {
       tab.activate();
     }
+  }
+
+  _hrefChangedCallback(oldValue, newValue) {
+    this.__updateHrefs();
+  }
+
+  get __href() {
+    return this.getAttribute('data-vl-href') || window.location.pathname + window.location.search;
+  }
+
+  __updateHrefs() {
+    [...this.__tabList.children].forEach((tab) =>
+      tab.setAttribute('data-vl-href', `${this.__href}#${tab.id}`));
   }
 
   __observeTabPanes(callback) {

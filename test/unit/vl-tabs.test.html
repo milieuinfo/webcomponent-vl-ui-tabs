@@ -119,7 +119,7 @@
         });
       });
 
-      test.only('er kunnen dynamisch tabs toegevoegd worden', (done) => {
+      test('er kunnen dynamisch tabs toegevoegd worden', (done) => {
         const getTabArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab"]')];
         const getTabSectionArray = () => [...element.shadowRoot.querySelectorAll('[is="vl-tab-section"]')];
 

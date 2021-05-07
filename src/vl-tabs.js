@@ -166,9 +166,6 @@ export class VlTabs extends vlElement(HTMLElement) {
       } else {
         this.appendChild(clonedTabPaneTitleSlot);
       }
-
-      // We verwijderen het src title slot, anders zal de innerText van de tabsection deze nog bevatten
-      tabPaneTitleSlot.remove();
     }
   }
 

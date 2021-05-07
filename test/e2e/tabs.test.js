@@ -44,7 +44,8 @@ describe('vl-tabs', async () => {
     tabs = await vlTabsPage.getSlottedTabs();
     await assert.eventually.isTrue(tabs.hasContent());
     const tabContent = await tabs.getContentSlotElement();
-    await assert.eventually.equal(tabContent.getText(), content4);
+    const tabContentText = await tabContent.getText();
+    await assert.isTrue(tabContentText.includes(content4));
   });
 
   it('als gebruiker kan ik na het selecteren van een tab de tab specifieke content zien', async () => {

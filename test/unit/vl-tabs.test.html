@@ -176,9 +176,8 @@
         element.shadowRoot.querySelector('[is="vl-tab"][data-vl-id="trein"]').activate();
       });
 
-      test('tabs pane title slot wijzigingen updaten de tab', async () => {
+      test('tabs pane title slot wijzigingen updaten de tab', (done) => {
         const element = fixture('vl-tabs-fixture');
-        await element.ready();
 
         const autoTabsPane = element.querySelector(`[data-vl-id='auto']`);
         let tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${autoTabsPane.id}-title-slot']`);
@@ -191,6 +190,7 @@
           tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${autoTabsPane.id}-title-slot']`);
           tabTitleSpan = tabTitleSlot.assignedNodes()[0];
           assert.equal(tabTitleSpan.innerHTML, '<i>Nieuwe Auto</i>');
+          done();
         });
       });
     });

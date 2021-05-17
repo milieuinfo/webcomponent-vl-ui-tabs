@@ -227,14 +227,13 @@ export class VlTabs extends vlElement(HTMLElement) {
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToDelete.forEach((tabPane) => this.__removeTabAndSection(tabPane));
 
-    // I can remove this code without failing unit and e2e tests failing, so the code can be removed?
-    // const tabPanesToUpdate = mutations.flatMap((mutation) => [...mutation.addedNodes])
-    //     .filter((node) => node.parentNode instanceof VlTabsPane)
-    //     .map((node) => node.parentNode);
-    // tabPanesToUpdate.forEach((tabPane) => {
-    //   this.__removeTabAndSection(tabPane);
-    //   this.__addTabAndSection(tabPane);
-    // });
+    const tabPanesToUpdate = mutations.flatMap((mutation) => [...mutation.addedNodes])
+        .filter((node) => node.parentNode instanceof VlTabsPane)
+        .map((node) => node.parentNode);
+    tabPanesToUpdate.forEach((tabPane) => {
+      this.__removeTabAndSection(tabPane);
+      this.__addTabAndSection(tabPane);
+    });
 
     this.__dress();
   }

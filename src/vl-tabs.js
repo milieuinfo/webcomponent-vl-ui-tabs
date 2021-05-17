@@ -228,8 +228,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     tabPanesToDelete.forEach((tabPane) => this.__removeTabAndSection(tabPane));
 
     const tabPanesToUpdate = mutations.flatMap((mutation) => [...mutation.addedNodes])
-        .filter((node) => node.parentNode instanceof VlTabsPane)
-        .map((node) => node.parentNode);
+        .filter((node) => node.parentNode.parentNode instanceof VlTabsPane)
+        .map((node) => node.parentNode.parentNode);
     tabPanesToUpdate.forEach((tabPane) => {
       this.__removeTabAndSection(tabPane);
       this.__addTabAndSection(tabPane);

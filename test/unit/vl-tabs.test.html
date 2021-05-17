@@ -185,7 +185,8 @@
         let tabTitleSpan = tabTitleSlot.assignedNodes()[0];
         assert.equal(tabTitleSpan.innerHTML, '<b>Auto</b>');
 
-        autoTabsPane.insertAdjacentHTML('afterbegin', `<span slot="title"><i>Nieuwe Auto</i></span>`);
+        const titleSlotSpan = autoTabsPane.querySelector(`[slot="title"]`);
+        titleSlotSpan.innerHTML= `<i>Nieuwe Auto</i>`;
 
         setTimeout(() => {
           tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${autoTabsPane.id}-title-slot']`);

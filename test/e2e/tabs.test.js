@@ -26,9 +26,9 @@ describe('vl-tabs', async () => {
     const tabElements = await tabs.getTabs();
     assert.lengthOf(tabElements, 3);
 
-    await assert.eventually.equal(tabElements[0].getTitleText(), 'Trein');
-    await assert.eventually.equal(tabElements[1].getTitleText(), 'Metro, tram en bus');
-    await assert.eventually.equal(tabElements[2].getTitleText(), 'Fiets');
+    await assert.eventually.equal(tabElements[0].getText(), 'Trein');
+    await assert.eventually.equal(tabElements[1].getText(), 'Metro, tram en bus');
+    await assert.eventually.equal(tabElements[2].getText(), 'Fiets');
   });
 
   it('als gebruiker kan ik een tab met title slot en content bekijken', async () => {
@@ -36,8 +36,10 @@ describe('vl-tabs', async () => {
     await assert.eventually.isFalse(tabs.hasContent());
 
     const tabElements = await tabs.getTabs();
-    await assert.eventually.equal(tabElements[0].getTitleText(), 'Auto');
-    await assert.eventually.equal(tabElements[1].getTitleText(), 'Vrachtwagen');
+    const tab1TitleSlot = await tabElements[0].getTitleSlotNodes();
+    const tab2TitleSlot = await tabElements[1].getTitleSlotNodes();
+    await assert.eventually.equal(tab1TitleSlot[0].getText(), 'Auto');
+    await assert.eventually.equal(tab2TitleSlot[0].getText(), 'Vrachtwagen');
 
     await tabElements[1].click();
 

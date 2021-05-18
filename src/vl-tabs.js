@@ -117,8 +117,6 @@ export class VlTabs extends vlElement(HTMLElement) {
   };
 
   _addTab({tabPane, index}) {
-    this._moveTabPaneTitleSlot(tabPane);
-
     const {id, title} = tabPane;
     const element = this.__getTabTemplate({id, title});
     if (index && index >= 0) {
@@ -149,22 +147,6 @@ export class VlTabs extends vlElement(HTMLElement) {
     const element = this.__tabs.querySelector(`#${id}-pane`);
     if (element) {
       this.__tabs.removeChild(element);
-    }
-  }
-
-  _moveTabPaneTitleSlot(tabPane) {
-    const tabPaneTitleSlot = tabPane.querySelector('[slot="title"]');
-
-    if (tabPaneTitleSlot) {
-      const clonedTabPaneTitleSlot = tabPaneTitleSlot.cloneNode(true);
-      clonedTabPaneTitleSlot.setAttribute('slot', `${tabPane.id}-title-slot`);
-
-      const existingTabPaneTitleSlot = this.querySelector(`[slot="${tabPane.id}-title-slot"]`);
-      if (existingTabPaneTitleSlot) {
-        this.replaceChild(clonedTabPaneTitleSlot, existingTabPaneTitleSlot);
-      } else {
-        this.appendChild(clonedTabPaneTitleSlot);
-      }
     }
   }
 
@@ -216,7 +198,7 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __observeTabPanes(callback) {
     const observer = new MutationObserver(callback);
-    observer.observe(this, {childList: true, subtree: true});
+    observer.observe(this, {childList: true});
     return observer;
   }
 
@@ -226,14 +208,6 @@ export class VlTabs extends vlElement(HTMLElement) {
 
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
     tabPanesToDelete.forEach((tabPane) => this.__removeTabAndSection(tabPane));
-
-    const tabPanesToUpdate = mutations.flatMap((mutation) => [...mutation.addedNodes])
-        .filter((node) => node.parentNode.parentNode instanceof VlTabsPane)
-        .map((node) => node.parentNode.parentNode);
-    tabPanesToUpdate.forEach((tabPane) => {
-      this.__removeTabAndSection(tabPane);
-      this.__addTabAndSection(tabPane);
-    });
 
     this.__dress();
   }

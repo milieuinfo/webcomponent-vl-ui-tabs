@@ -3,16 +3,37 @@ const {By} = require('vl-ui-core').Test.Setup;
 
 class VlTab extends VlElement {
   async click() {
-    const link = await this._getLink();
-    await link.click();
+    const nodes = await this.getTitleSlotNodes();
+    if (nodes && nodes.length > 0) {
+      return nodes[0].click();
+    } else {
+      const link = await this._getLink();
+      return link.click();
+    }
+  }
+
+  async getTitleSlotNodes() {
+    const slot = await this._getTitleSlot();
+    return this.getAssignedNodes(slot);
   }
 
   async isActive() {
     return this.hasClass('vl-tab--active');
   }
 
+  async getText() {
+    const slot = await this._getTitleSlot();
+    return slot.getText();
+  }
+
   async _getLink() {
-    return this.findElement(By.css('a'));
+    const element = await this.findElement(By.css('a'));
+    return new VlElement(this.driver, element);
+  }
+
+  async _getTitleSlot() {
+    const link = await this._getLink();
+    return link.findElement(By.css('slot'));
   }
 }
 

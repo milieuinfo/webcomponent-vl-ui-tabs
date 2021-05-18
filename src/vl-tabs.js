@@ -6,13 +6,17 @@ import '/node_modules/@govflanders/vl-ui-tabs/dist/js/tabs.js';
 /**
  * VlTabs
  * @class
- * @classdesc Gebruik de vl-tabs navigatie om veel maar gerelateerde informatie in kleinere stukken te verdelen. Wanneer er met tabs gewerkt wordt, zal een deel van de informatie verborgen worden. Het is daardoor belangrijk om de gebruiker hier attent op te maken en duidelijk over te brengen welke informatie in een tab zichtbaar zal zijn. Op mobiele toestellen zal de tab navigatie gevisualiseerd worden via een dropdown menu.
+ * @classdesc Gebruik de vl-tabs navigatie om veel maar gerelateerde informatie in kleinere stukken te verdelen. Wanneer er met tabs gewerkt wordt,
+ *   zal een deel van de informatie verborgen worden. Het is daardoor belangrijk om de gebruiker hier attent op te maken en duidelijk over te brengen
+ *   welke informatie in een tab zichtbaar zal zijn. Op mobiele toestellen zal de tab navigatie gevisualiseerd worden via een dropdown menu.
  *
  * @extends HTMLElement
  * @mixes vlElement
  *
- * @property {boolean} data-vl-alt - Attribuut om de alt variant van de tabs te tonen. Deze variant dient gebruikt te worden als subnavigatie onder de functional header.
- * @property {boolean} data-vl-responsive-label - Attribuut om de waarde in de tabs in responsive mode te veranderen. Enkel van toepassing wanneer geen tab is gekozen.
+ * @property {boolean} data-vl-alt - Attribuut om de alt variant van de tabs te tonen. Deze variant dient gebruikt te worden als subnavigatie onder
+ *   de functional header.
+ * @property {boolean} data-vl-responsive-label - Attribuut om de waarde in de tabs in responsive mode te veranderen. Enkel van toepassing wanneer
+ *   geen tab is gekozen.
  *
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/releases/latest|Release notes}
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-tabs/issues|Issues}
@@ -99,7 +103,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   __getTabTemplate({id, title}) {
     return this._template(`
       <li is="vl-tab" data-vl-href="${this.__href}#${id}" data-vl-id="${id}">
-        ${(title)}
+        <slot name="${id}-title-slot">${title}</slot>
       </li>
     `);
   }
@@ -112,7 +116,8 @@ export class VlTabs extends vlElement(HTMLElement) {
     `);
   };
 
-  _addTab({id, title, index}) {
+  _addTab({tabPane, index}) {
+    const {id, title} = tabPane;
     const element = this.__getTabTemplate({id, title});
     if (index && index >= 0) {
       this.__tabList.insertBefore(element, this.__tabList.children[index]);
@@ -147,7 +152,9 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   _renderTabs() {
     this.__tabList.innerHTML = '';
-    this.__tabPanes.forEach((tabPane) => this._addTab({id: tabPane.id, title: tabPane.title}));
+    this.__tabPanes.forEach((tabPane) => {
+      this._addTab({tabPane: tabPane});
+    });
   }
 
   _renderSections() {
@@ -197,17 +204,23 @@ export class VlTabs extends vlElement(HTMLElement) {
 
   __processTabPane(mutations) {
     const tabPanesToAdd = mutations.flatMap((mutation) => [...mutation.addedNodes]).filter((node) => node instanceof VlTabsPane);
-    tabPanesToAdd.forEach((tabPane) => {
-      const index = this.__tabPanes.indexOf(tabPane);
-      this._addTab({id: tabPane.id, title: tabPane.title, index: index});
-      this._addTabSection({id: tabPane.id, index: index});
-    });
+    tabPanesToAdd.forEach((tabPane) => this.__addTabAndSection(tabPane));
+
     const tabPanesToDelete = mutations.flatMap((mutation) => [...mutation.removedNodes]).filter((node) => node instanceof VlTabsPane);
-    tabPanesToDelete.forEach((tabPane) => {
-      this._removeTab(tabPane.id);
-      this._removeTabSection(tabPane.id);
-    });
+    tabPanesToDelete.forEach((tabPane) => this.__removeTabAndSection(tabPane));
+
     this.__dress();
+  }
+
+  __addTabAndSection(tabPane) {
+    const index = this.__tabPanes.indexOf(tabPane);
+    this._addTab({tabPane: tabPane, index: index});
+    this._addTabSection({id: tabPane.id, index: index});
+  }
+
+  __removeTabAndSection(tabPane) {
+    this._removeTab(tabPane.id);
+    this._removeTabSection(tabPane.id);
   }
 }
 

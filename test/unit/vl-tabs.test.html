@@ -27,9 +27,41 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="vl-tabs-root-fixture">
+    <template>
+      <vl-tabs data-vl-href="#">
+        <vl-tabs-pane data-vl-id="trein" data-vl-title="Trein">
+          Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+        </vl-tabs-pane>
+        <vl-tabs-pane data-vl-id="metro-tram-bus" data-vl-title="Metro, tram en bus">
+          Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </vl-tabs-pane>
+      </vl-tabs>
+    </template>
+  </test-fixture>
+
   <test-fixture id="vl-tabs-empty-fixture">
     <template>
       <vl-tabs></vl-tabs>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="vl-tabs-title-slot-fixture">
+    <template>
+      <vl-tabs>
+        <vl-tabs-pane data-vl-id="trein">
+          <span slot="title"><b>Trein</b></span>
+          Nullam quis risus eget urna mollis ornare vel eu leo. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+        </vl-tabs-pane>
+        <vl-tabs-pane data-vl-id="metro-tram-bus">
+          <span slot="title"><b>Metro, tram en bus</b></span>
+          Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </vl-tabs-pane>
+        <vl-tabs-pane data-vl-id="fiets">
+          <span slot="title"><b>Fiets</b></span>
+          Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+        </vl-tabs-pane>
+      </vl-tabs>
     </template>
   </test-fixture>
 
@@ -43,7 +75,7 @@
       teardown(() => {
         sandbox.restore();
       });
-    
+
       test('alternative tabs versie heeft juiste klasse', () => {
         const tabs = fixture('vl-tabs-fixture');
         assert.isFalse(tabs.__tabList.classList.contains('vl-tabs--alt'));
@@ -59,28 +91,47 @@
         const tabs = element.__tabList.querySelectorAll('[is="vl-tab"]');
         assert.lengthOf(tabs, tabPanes.length);
 
+        const path = window.location.pathname;
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
           const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
           const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
-          const path = window.location.pathname;
           assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
           assert.equal(tab.textContent.trim(), tabPane.getAttribute('data-vl-title'));
         });
       });
 
-      test('de tab sections worden correct gegenereerd', () => {
-        const element = fixture('vl-tabs-fixture');
+      test('de tabs worden correct gegenereerd bij gebruik van een slot title', () => {
+        const element = fixture('vl-tabs-title-slot-fixture');
         const tabPanes = element.querySelectorAll('vl-tabs-pane');
-        const tabSections = element.__tabs.querySelectorAll('[is="vl-tab-section"]');
-        assert.lengthOf(tabSections, tabPanes.length);
+        const tabs = element.__tabList.querySelectorAll('[is="vl-tab"]');
+        assert.lengthOf(tabs, tabPanes.length);
 
+        const path = window.location.pathname;
         ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
-          const tabSection = [...tabSections].find((tabSection) => tabSection.id === `${val}-pane`);
-          const index = [...tabSections].indexOf(tabSection);
+          const tab = [...tabs].find((tab) => tab.getAttribute('data-vl-id') === `${val}`);
+          const index = [...tabs].indexOf(tab);
           const tabPane = tabPanes[index];
-          assert.equal(tabPane.getAttribute('slot'), `${tabPane.getAttribute('data-vl-id')}-slot`);
-          should.exist(tabSection.querySelector(`slot[name="${tabPane.getAttribute('data-vl-id')}-slot"]`));
+          assert.equal(tab.getAttribute('data-vl-href'), `${path}#${tabPane.getAttribute('data-vl-id')}`);
+          const text = tab.querySelector('slot').assignedNodes().map((node) => node.textContent).join('');
+          assert.equal(text, tabPane.querySelector('[slot="title"]').textContent);
+        });
+      });
+
+      test('de tab sections worden correct gegenereerd', () => {
+        ['vl-tabs-fixture', 'vl-tabs-title-slot-fixture'].forEach((identifier) => {
+          const element = fixture(identifier);
+          const tabPanes = element.querySelectorAll('vl-tabs-pane');
+          const tabSections = element.__tabs.querySelectorAll('[is="vl-tab-section"]');
+          assert.lengthOf(tabSections, tabPanes.length);
+
+          ['trein', 'metro-tram-bus', 'fiets'].forEach((val) => {
+            const tabSection = [...tabSections].find((tabSection) => tabSection.id === `${val}-pane`);
+            const index = [...tabSections].indexOf(tabSection);
+            const tabPane = tabPanes[index];
+            assert.equal(tabPane.getAttribute('slot'), `${tabPane.getAttribute('data-vl-id')}-slot`);
+            should.exist(tabSection.querySelector(`slot[name="${tabPane.getAttribute('data-vl-id')}-slot"]`));
+          });
         });
       });
 
@@ -126,9 +177,16 @@
             setTimeout(() => {
               assert.lengthOf(getTabArray(), 3);
               assert.lengthOf(getTabSectionArray(), 3);
-              assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3']);
-              assert.deepEqual(getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText), ['1 content', '2 content', '3 content']);
-              done();
+              element.insertAdjacentHTML('beforeend', `<vl-tabs-pane data-vl-id="4"><span slot="title">4</span>4 content</vl-tabs-pane>`);
+              setTimeout(() => {
+                assert.lengthOf(getTabArray(), 4);
+                assert.lengthOf(getTabSectionArray(), 4);
+                assert.deepEqual(getTabArray().map((tab) => tab.id), ['1', '2', '3', '4']);
+                getTabSectionArray().map((tabSection) => tabSection.querySelector('slot').assignedNodes()[0].innerText).forEach((tabSectionText) => {
+                  assert.isTrue(['1 content', '2 content', '3 content', '4 content'].some((expectedContent) => tabSectionText.includes(expectedContent)), 'The tab content was not found');
+                });
+                done();
+              });
             });
           });
         });
@@ -150,12 +208,34 @@
       });
 
       test('active tab change event komt door tot parent', (done) => {
-        const element = fixture('vl-tabs-fixture');
-        element.addEventListener('change', (e) => {
-          assert.equal(e.detail.activeTab, 'trein');
+        const element = fixture('vl-tabs-root-fixture');
+        element.ready().then(() => {
+          element.addEventListener('change', (e) => {
+            assert.equal(e.detail.activeTab, 'trein');
+            done();
+          });
+          element.shadowRoot.querySelector('[is="vl-tab"][data-vl-id="trein"]').activate();
+        });
+      });
+
+      test('tabs pane title slot wijzigingen updaten de tab', (done) => {
+        const element = fixture('vl-tabs-title-slot-fixture');
+
+        const id = 'trein';
+        const autoTabsPane = element.querySelector(`[data-vl-id='${id}']`);
+        let tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${id}-title-slot']`);
+        let tabTitleSpan = tabTitleSlot.assignedNodes()[0];
+        assert.equal(tabTitleSpan.innerHTML, '<b>Trein</b>');
+
+        const titleSlotSpan = autoTabsPane.querySelector(`[slot="title"]`);
+        titleSlotSpan.innerHTML = `<i>Nieuwe trein</i>`;
+
+        setTimeout(() => {
+          tabTitleSlot = element.shadowRoot.querySelector(`slot[name='${id}-title-slot']`);
+          tabTitleSpan = tabTitleSlot.assignedNodes()[0];
+          assert.equal(tabTitleSpan.innerHTML, '<i>Nieuwe trein</i>');
           done();
         });
-        element.shadowRoot.querySelector('[is="vl-tab"][data-vl-id="trein"]').activate();
       });
 
       test('update href leidt tot nieuwe links', (done) => {

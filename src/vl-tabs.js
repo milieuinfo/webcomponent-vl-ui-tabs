@@ -103,7 +103,7 @@ export class VlTabs extends vlElement(HTMLElement) {
   __getTabTemplate({id, title}) {
     return this._template(`
       <li is="vl-tab" data-vl-href="${this.__href}#${id}" data-vl-id="${id}">
-        <slot name="${id}-title-slot">${(title)}</slot>
+        <slot name="${id}-title-slot">${title}</slot>
       </li>
     `);
   }
